@@ -1,11 +1,11 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/mercado/src",
+  "sourceRoot": "apps/orders/src",
   "compilerOptions": {
     "deleteOutDir": true,
     "webpack": true,
-    "tsConfigPath": "apps/mercado/tsconfig.app.json"
+    "tsConfigPath": "apps/orders/tsconfig.app.json"
   },
   "projects": {
     "common": {
@@ -15,15 +15,6 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
-      }
-    },
-    "mercado": {
-      "type": "application",
-      "root": "apps/mercado",
-      "entryFile": "main",
-      "sourceRoot": "apps/mercado/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mercado/tsconfig.app.json"
       }
     },
     "orders": {
@@ -37,5 +28,5 @@
     }
   },
   "monorepo": true,
-  "root": "apps/mercado"
+  "root": "apps/orders"
 }
