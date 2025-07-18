@@ -8,16 +8,11 @@ export class OrdersService {
   constructor(private readonly ordersRepository: OrdersRepository) {}
 
   create(createOrderDto: CreateOrderDto) {
-    const orderData = {
+    return this.ordersRepository.create({
       ...createOrderDto,
       timestamp: new Date(),
       userId: '123',
-    };
-    console.log(
-      'Creating order with data:',
-      JSON.stringify(orderData, null, 2),
-    );
-    return this.ordersRepository.create(orderData);
+    });
   }
 
   findAll() {

@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OrdersService } from './orders.service';
 import { OrdersRepository } from './orders.repository';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, OrderItemDto } from './dto/create-order.dto';
+import { OrderStatus } from './types/order.types';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
@@ -10,12 +11,25 @@ describe('OrdersService', () => {
   let service: OrdersService;
   let repository: jest.Mocked<OrdersRepository>;
 
+  const mockOrderItems: OrderItemDto[] = [
+    {
+      productId: 'prod-1',
+      quantity: 2,
+      price: 50,
+    },
+    {
+      productId: 'prod-2',
+      quantity: 1,
+      price: 100,
+    },
+  ];
+
   const mockOrder = {
     _id: new Types.ObjectId(),
     userId: '123',
-    status: 'pending' as const,
+    status: OrderStatus.PENDING,
     totalPrice: 100,
-    orderItems: ['item1', 'item2'],
+    orderItems: mockOrderItems,
     invoiceId: 'inv-123',
     timestamp: new Date(),
   };
@@ -54,9 +68,9 @@ describe('OrdersService', () => {
   describe('create', () => {
     it('should create an order with timestamp and userId', async () => {
       const createOrderDto: CreateOrderDto = {
-        status: 'pending',
+        status: OrderStatus.PENDING,
         totalPrice: 100,
-        orderItems: ['item1', 'item2'],
+        orderItems: mockOrderItems,
         invoiceId: 'inv-123',
       };
 
@@ -117,7 +131,7 @@ describe('OrdersService', () => {
     it('should update an order successfully', async () => {
       const orderId = '507f1f77cf86cd799439011';
       const updateOrderDto: UpdateOrderDto = {
-        status: 'paid',
+        status: OrderStatus.PAID,
         totalPrice: 150,
       };
 
@@ -137,7 +151,7 @@ describe('OrdersService', () => {
     it('should throw NotFoundException when order not found during update', async () => {
       const orderId = '507f1f77cf86cd799439011';
       const updateOrderDto: UpdateOrderDto = {
-        status: 'paid',
+        status: OrderStatus.PAID,
       };
 
       repository.findOneAndUpdate.mockRejectedValue(
@@ -157,10 +171,10 @@ describe('OrdersService', () => {
     it('should handle partial updates correctly', async () => {
       const orderId = '507f1f77cf86cd799439011';
       const updateOrderDto: UpdateOrderDto = {
-        status: 'shipped' as const,
+        status: OrderStatus.SHIPPED,
       };
 
-      const updatedOrder = { ...mockOrder, status: 'shipped' as const };
+      const updatedOrder = { ...mockOrder, status: OrderStatus.SHIPPED };
       repository.findOneAndUpdate.mockResolvedValue(updatedOrder);
 
       const result = await service.update(orderId, updateOrderDto);

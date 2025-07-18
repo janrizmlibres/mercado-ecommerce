@@ -17,10 +17,6 @@ export class OrdersController {
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
-    console.log(
-      'Received createOrderDto:',
-      JSON.stringify(createOrderDto, null, 2),
-    );
     return this.ordersService.create(createOrderDto);
   }
 

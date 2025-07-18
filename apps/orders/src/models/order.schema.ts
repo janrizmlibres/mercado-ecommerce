@@ -1,24 +1,42 @@
 import { AbstractDocument } from '@app/common';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { OrderStatus, OrderItem } from '../types/order.types';
+
+@Schema({ _id: false })
+export class OrderItemDocument implements OrderItem {
+  @Prop({ required: true })
+  productId: string;
+
+  @Prop({ required: true })
+  quantity: number;
+
+  @Prop({ required: true })
+  price: number;
+}
 
 @Schema({ versionKey: false })
 export class OrderDocument extends AbstractDocument {
-  @Prop()
+  @Prop({ required: true })
   userId: string;
 
-  @Prop()
-  status: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+  @Prop({
+    type: String,
+    required: true,
+    enum: OrderStatus,
+    default: OrderStatus.PENDING,
+  })
+  status: OrderStatus;
 
-  @Prop()
+  @Prop({ required: true })
   totalPrice: number;
 
-  @Prop()
-  orderItems: string[];
+  @Prop({ type: [OrderItemDocument], required: true })
+  orderItems: OrderItemDocument[];
 
-  @Prop()
+  @Prop({ required: true })
   invoiceId: string;
 
-  @Prop()
+  @Prop({ default: Date.now })
   timestamp: Date;
 }
 
