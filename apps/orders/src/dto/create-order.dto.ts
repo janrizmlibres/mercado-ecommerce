@@ -7,21 +7,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderStatus, OrderItem } from '../types/order.types';
-
-export class OrderItemDto implements OrderItem {
-  @IsString()
-  @IsNotEmpty()
-  productId: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  quantity: number;
-
-  @IsNumber()
-  @IsNotEmpty()
-  price: number;
-}
+import { OrderStatus } from '../types/order.types';
+import { OrderItemDto } from './order-item.dto';
 
 export class CreateOrderDto {
   @IsEnum(OrderStatus)
