@@ -1,5 +1,16 @@
-version: '3.8'
 services:
+  orders:
+    build:
+      context: .
+      dockerfile: ./apps/orders/Dockerfile
+      target: development
+    command: pnpm run start:dev orders
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+
   mongodb:
     image: mongo:7
     container_name: mongodb
