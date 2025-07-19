@@ -5,7 +5,12 @@ import { ConfigModule, LoggerModule } from '@app/common';
 import { PrismaService } from './prisma.service';
 
 @Module({
-  imports: [LoggerModule, ConfigModule.forRoot()],
+  imports: [
+    LoggerModule,
+    ConfigModule.forRoot({
+      envFilePath: './apps/orders/.env.local',
+    }),
+  ],
   controllers: [OrdersController],
   providers: [OrdersService, PrismaService],
 })
