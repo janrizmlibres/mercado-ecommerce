@@ -1,36 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrdersRepository } from './orders.repository';
+import { PrismaService } from './prisma.service';
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly ordersRepository: OrdersRepository) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   create(createOrderDto: CreateOrderDto) {
-    return this.ordersRepository.create({
-      ...createOrderDto,
-      timestamp: new Date(),
-      userId: '123',
+    const { orderItems, ...order } = createOrderDto;
+
+    return this.prismaService.order.create({
+      data: {
+        ...order,
+        userId: randomUUID(),
+        orderItems: {
+          createMany: {
+            data: orderItems,
+          },
+        },
+      },
+      include: { orderItems: true },
     });
   }
 
   findAll() {
-    return this.ordersRepository.find({});
+    return this.prismaService.order.findMany({
+      include: { orderItems: true },
+    });
   }
 
-  findOne(_id: string) {
-    return this.ordersRepository.findOne({ _id });
+  findOne(id: string) {
+    return this.prismaService.order.findUniqueOrThrow({
+      where: { id },
+      include: { orderItems: true },
+    });
   }
 
-  update(_id: string, updateOrderDto: UpdateOrderDto) {
-    return this.ordersRepository.findOneAndUpdate(
-      { _id },
-      { $set: updateOrderDto },
-    );
+  update(id: string, updateOrderDto: UpdateOrderDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { orderItems, ...order } = updateOrderDto;
+    return this.prismaService.order.update({
+      where: { id },
+      data: order,
+      include: { orderItems: true },
+    });
   }
 
-  remove(_id: string) {
-    return this.ordersRepository.findOneAndDelete({ _id });
+  remove(id: string) {
+    return this.prismaService.order.delete({
+      where: { id },
+      include: { orderItems: true },
+    });
   }
 }

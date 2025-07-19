@@ -7,13 +7,13 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderStatus } from '../types/order.types';
 import { OrderItemDto } from './order-item.dto';
+import { Status } from '.prisma/client';
 
 export class CreateOrderDto {
-  @IsEnum(OrderStatus)
+  @IsEnum(Status)
   @IsNotEmpty()
-  status: OrderStatus;
+  status: Status;
 
   @IsNumber()
   @IsNotEmpty()

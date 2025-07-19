@@ -1,19 +1,12 @@
 import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
-import { DatabaseModule, LoggerModule } from '@app/common';
-import { OrdersRepository } from './orders.repository';
-import { OrderDocument, OrderSchema } from './models/order.schema';
+import { ConfigModule, LoggerModule } from '@app/common';
+import { PrismaService } from './prisma.service';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    DatabaseModule.forFeature([
-      { name: OrderDocument.name, schema: OrderSchema },
-    ]),
-    LoggerModule,
-  ],
+  imports: [LoggerModule, ConfigModule.forRoot()],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository],
+  providers: [OrdersService, PrismaService],
 })
 export class OrdersModule {}

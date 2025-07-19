@@ -1,19 +1,20 @@
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import {
   ConfigModule as NestConfigModule,
-  ConfigService,
+  ConfigModuleOptions,
 } from '@nestjs/config';
 import * as Joi from 'joi';
 
-@Module({
-  imports: [
-    NestConfigModule.forRoot({
+@Module({})
+export class ConfigModule {
+  static forRoot(
+    options?: Omit<ConfigModuleOptions, 'validationSchema'>,
+  ): Promise<DynamicModule> {
+    return NestConfigModule.forRoot({
+      ...options,
       validationSchema: Joi.object({
-        MONGODB_URI: Joi.string().required(),
+        DATABASE_URL: Joi.string().required(),
       }),
-    }),
-  ],
-  providers: [ConfigService],
-  exports: [ConfigService],
-})
-export class ConfigModule {}
+    });
+  }
+}

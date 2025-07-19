@@ -4,25 +4,36 @@ services:
       context: .
       dockerfile: ./apps/orders/Dockerfile
       target: development
-    command: pnpm run start:dev orders
+    command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev orders"
+    depends_on:
+      - orders-db
+    env_file:
+      - ./apps/orders/.env
     ports:
       - '3000:3000'
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/orders/src
+          target: /usr/src/app/apps/orders/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./apps/orders/prisma/migrations
 
-  mongodb:
-    image: mongo:7
-    container_name: mongodb
-    restart: unless-stopped
-    ports:
-      - '27017:27017'
+  orders-db:
+    image: postgres:17
+    container_name: orders-db
+    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: mercado
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=orders
+    ports:
+      - 5432:5432
     volumes:
-      - mongo_data:/data/db
+      - orders-db-data:/var/lib/postgresql/data
 
 volumes:
-  mongo_data:
+  orders-db-data:
