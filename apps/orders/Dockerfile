@@ -1,34 +1,49 @@
-FROM node:alpine As development
+FROM node:alpine AS development
+
+# Create a non-privileged user
+RUN adduser -D -s /bin/sh -u 1001 app
 
 WORKDIR /usr/src/app
 
-COPY package.json pnpm-lock.yaml ./
-COPY tsconfig.json tsconfig.json
-COPY nest-cli.json nest-cli.json
-
+# Install pnpm globally first (as root)
 RUN npm install -g pnpm
 
+# Copy package files for dependency installation (as root)
+COPY --chown=app:app package.json pnpm-lock.yaml nest-cli.json tsconfig.json ./
+
+# Set ownership of the working directory
+RUN chown -R app:app /usr/src/app
+
+# Switch to non-privileged user
+USER app
+
+# Install dependencies as app user
 RUN pnpm install
 
-COPY apps/orders apps/orders
-COPY libs libs
+# Copy Prisma schema and generate client
+COPY --chown=app:app apps/orders/prisma ./prisma
+RUN pnpm prisma generate
 
+# Copy source code (will be overridden by watch sync)
+COPY --chown=app:app apps/orders apps/orders
+COPY --chown=app:app libs libs
+
+# Build the application
 RUN pnpm run build orders
 
-FROM node:alpine As production
+FROM node:alpine AS production
 
 ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
-COPY pnpm-lock.yaml ./
-
 RUN npm install -g pnpm
+
+COPY package.json pnpm-lock.yaml ./
 
 RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["node", "dist/apps/orders/main"]
+CMD ["pnpm", "run", "start:prod", "dist/apps/orders/main"]

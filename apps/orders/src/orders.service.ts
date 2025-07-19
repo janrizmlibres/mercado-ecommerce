@@ -1,43 +1,57 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { OrdersRepository } from './orders.repository';
-import { Order as OrderModel } from '../generated/prisma';
+import { PrismaService } from './prisma.service';
+import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly ordersRepository: OrdersRepository) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   create(createOrderDto: CreateOrderDto) {
-    const { orderItems, ...rest } = createOrderDto;
+    const { orderItems, ...order } = createOrderDto;
 
-    return this.ordersRepository.create({
-      ...rest,
-      userId: '123',
-      orderItems: {
-        createMany: {
-          data: orderItems,
+    return this.prismaService.order.create({
+      data: {
+        ...order,
+        userId: randomUUID(),
+        orderItems: {
+          createMany: {
+            data: orderItems,
+          },
         },
       },
+      include: { orderItems: true },
     });
   }
 
-  findUnique(id: string): Promise<OrderModel> {
-    return this.ordersRepository.findUnique({ id });
+  findAll() {
+    return this.prismaService.order.findMany({
+      include: { orderItems: true },
+    });
   }
 
-  findMany(): Promise<OrderModel[]> {
-    return this.ordersRepository.findMany({});
+  findOne(id: string) {
+    return this.prismaService.order.findUniqueOrThrow({
+      where: { id },
+      include: { orderItems: true },
+    });
   }
 
   update(id: string, updateOrderDto: UpdateOrderDto) {
-    return this.ordersRepository.update({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { orderItems, ...order } = updateOrderDto;
+    return this.prismaService.order.update({
       where: { id },
-      data: updateOrderDto,
+      data: order,
+      include: { orderItems: true },
     });
   }
 
   remove(id: string) {
-    return this.ordersRepository.delete({ id });
+    return this.prismaService.order.delete({
+      where: { id },
+      include: { orderItems: true },
+    });
   }
 }

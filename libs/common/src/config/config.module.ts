@@ -8,7 +8,7 @@ import * as Joi from 'joi';
 @Module({})
 export class ConfigModule {
   static forRoot(
-    options: Omit<ConfigModuleOptions, 'validationSchema'>,
+    options?: Omit<ConfigModuleOptions, 'validationSchema'>,
   ): Promise<DynamicModule> {
     return NestConfigModule.forRoot({
       ...options,

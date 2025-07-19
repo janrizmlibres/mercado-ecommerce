@@ -1,17 +1,17 @@
 import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
-import { LoggerModule } from '@app/common';
-import { OrdersRepository } from './orders.repository';
-import { ConfigModule } from '@app/common';
+import { ConfigModule, LoggerModule } from '@app/common';
 import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: 'apps/orders/.env' }),
     LoggerModule,
+    ConfigModule.forRoot({
+      envFilePath: './apps/orders/.env.local',
+    }),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository, PrismaService],
+  providers: [OrdersService, PrismaService],
 })
 export class OrdersModule {}

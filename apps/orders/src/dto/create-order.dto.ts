@@ -10,6 +10,7 @@ import {
 import { Status } from '../../generated/prisma';
 import { Type } from 'class-transformer';
 import { OrderItemDto } from './order-item.dto';
+import { Status } from '.prisma/client';
 
 export class CreateOrderDto {
   @IsEnum(Status)
