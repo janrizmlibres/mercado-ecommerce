@@ -1,7 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { OrderItem } from '../types/order.types';
 
-export class OrderItemDto implements OrderItem {
+export class OrderItemDto {
   @IsString()
   @IsNotEmpty()
   productId: string;

@@ -4,25 +4,40 @@ services:
       context: .
       dockerfile: ./apps/orders/Dockerfile
       target: development
-    command: pnpm run start:dev orders
+    command: sh -c "npx prisma migrate deploy && npx prisma generate && pnpm run start:dev orders"
     ports:
       - '3000:3000'
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
+    depends_on:
+      - orders-db
 
-  mongodb:
-    image: mongo:7
-    container_name: mongodb
-    restart: unless-stopped
-    ports:
-      - '27017:27017'
+  products-db:
+    image: postgres:17
+    container_name: products-db
+    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: mercado
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=products
+    ports:
+      - 5432:5432
     volumes:
-      - mongo_data:/data/db
+      - postgres-data:/var/lib/postgresql/data
+
+  orders-db:
+    image: postgres:17
+    container_name: orders-db
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=orders
+    ports:
+      - 5433:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  mongo_data:
+  postgres-data:

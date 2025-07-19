@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
-import { DatabaseModule, LoggerModule } from '@app/common';
+import { LoggerModule } from '@app/common';
 import { OrdersRepository } from './orders.repository';
-import { OrderDocument, OrderSchema } from './models/order.schema';
+import { ConfigModule } from '@app/common';
+import { PrismaService } from './prisma.service';
 
 @Module({
   imports: [
-    DatabaseModule,
-    DatabaseModule.forFeature([
-      { name: OrderDocument.name, schema: OrderSchema },
-    ]),
+    ConfigModule.forRoot({ envFilePath: 'apps/orders/.env' }),
     LoggerModule,
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, OrdersRepository],
+  providers: [OrdersService, OrdersRepository, PrismaService],
 })
 export class OrdersModule {}
