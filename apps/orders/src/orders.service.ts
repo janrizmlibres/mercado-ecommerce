@@ -39,11 +39,9 @@ export class OrdersService {
   }
 
   update(id: string, updateOrderDto: UpdateOrderDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { orderItems, ...order } = updateOrderDto;
     return this.prismaService.order.update({
       where: { id },
-      data: order,
+      data: updateOrderDto,
       include: { orderItems: true },
     });
   }

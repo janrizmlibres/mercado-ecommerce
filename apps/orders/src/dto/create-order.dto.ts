@@ -5,9 +5,7 @@ import {
   IsNumber,
   IsString,
   ValidateNested,
-  ArrayNotEmpty,
 } from 'class-validator';
-import { Status } from '../../generated/prisma';
 import { Type } from 'class-transformer';
 import { OrderItemDto } from './order-item.dto';
 import { Status } from '.prisma/client';
@@ -22,9 +20,9 @@ export class CreateOrderDto {
   totalPrice: number;
 
   @IsArray()
-  @ArrayNotEmpty()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
+  @IsNotEmpty()
   orderItems: OrderItemDto[];
 
   @IsString()
