@@ -22,6 +22,29 @@ services:
         - action: rebuild
           path: ./apps/orders/prisma/migrations
 
+  auth:
+    build:
+      context: .
+      dockerfile: ./apps/auth/Dockerfile
+      target: development
+    command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev auth"
+    depends_on:
+      - auth-db
+    env_file:
+      - ./apps/auth/.env
+    ports:
+      - '3001:3000'
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/auth/src
+          target: /usr/src/app/apps/auth/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./apps/auth/prisma/migrations
+
   orders-db:
     image: postgres:17
     container_name: orders-db
