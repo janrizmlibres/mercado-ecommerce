@@ -12,17 +12,14 @@ import { Status } from '.prisma/client';
 
 export class CreateOrderDto {
   @IsEnum(Status)
-  @IsNotEmpty()
   status: Status;
 
   @IsNumber()
-  @IsNotEmpty()
   totalPrice: number;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
-  @IsNotEmpty()
   orderItems: OrderItemDto[];
 
   @IsString()

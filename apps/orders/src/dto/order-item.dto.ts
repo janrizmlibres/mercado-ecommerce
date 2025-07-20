@@ -6,10 +6,8 @@ export class OrderItemDto {
   productId: string;
 
   @IsNumber()
-  @IsNotEmpty()
   quantity: number;
 
   @IsNumber()
-  @IsNotEmpty()
   price: number;
 }
