@@ -3,6 +3,7 @@ import { User as UserModel } from '.prisma/client';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { TokenPayload } from './interfaces/token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -12,7 +13,7 @@ export class AuthService {
   ) {}
 
   login(user: UserModel, response: Response) {
-    const tokenPayload = { userId: user.id };
+    const tokenPayload: TokenPayload = { userId: user.id };
 
     const expires = new Date();
     expires.setSeconds(
