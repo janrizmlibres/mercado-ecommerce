@@ -21,6 +21,8 @@ services:
           target: /usr/src/app/libs/common/src
         - action: rebuild
           path: ./apps/orders/prisma/migrations
+        - action: rebuild
+          path: ./package.json
 
   auth:
     build:
@@ -44,6 +46,8 @@ services:
           target: /usr/src/app/libs/common/src
         - action: rebuild
           path: ./apps/auth/prisma/migrations
+        - action: rebuild
+          path: ./package.json
 
   orders-db:
     image: postgres:17
