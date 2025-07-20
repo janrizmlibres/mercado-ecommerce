@@ -35,5 +35,19 @@ services:
     volumes:
       - orders-db-data:/var/lib/postgresql/data
 
+  auth-db:
+    image: postgres:17
+    container_name: auth-db
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=users
+    ports:
+      - 5433:5432
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+
 volumes:
   orders-db-data:
+  auth-db-data:
