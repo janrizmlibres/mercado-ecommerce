@@ -136,6 +136,22 @@ importers:
         specifier: ^8.20.0
         version: 8.37.0(eslint@9.31.0(jiti@2.4.2))(typescript@5.8.3)
 
+  apps/auth:
+    dependencies:
+      '@mercado/auth':
+        specifier: 'link:'
+        version: 'link:'
+      '@prisma/client':
+        specifier: ^6.12.0
+        version: 6.12.0(prisma@6.12.0(typescript@5.8.3))(typescript@5.8.3)
+      prisma:
+        specifier: ^6.12.0
+        version: 6.12.0(typescript@5.8.3)
+    devDependencies:
+      dotenv-cli:
+        specifier: ^8.0.0
+        version: 8.0.0
+
   apps/orders:
     dependencies:
       '@mercado/orders':
