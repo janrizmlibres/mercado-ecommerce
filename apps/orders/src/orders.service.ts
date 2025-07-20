@@ -2,19 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from './prisma.service';
-import { randomUUID } from 'node:crypto';
 
 @Injectable()
 export class OrdersService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  create(createOrderDto: CreateOrderDto) {
+  create(createOrderDto: CreateOrderDto, userId: string) {
     const { orderItems, ...order } = createOrderDto;
 
     return this.prismaService.order.create({
       data: {
         ...order,
-        userId: randomUUID(),
+        userId,
         orderItems: {
           createMany: {
             data: orderItems,

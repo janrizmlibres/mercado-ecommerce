@@ -1,10 +1,10 @@
 import { Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { CurrentUser } from './current-user.decorator';
+import { CurrentUser } from '@app/common';
 import { User as UserModel } from '.prisma/client';
 import { Response } from 'express';
-import { MessagePattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
@@ -23,5 +23,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @MessagePattern('authenticate')
-  async authenticate() {}
+  authenticate(@Payload() data: { user: UserModel }) {
+    return data.user;
+  }
 }

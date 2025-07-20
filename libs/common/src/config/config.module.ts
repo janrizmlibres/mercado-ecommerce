@@ -5,7 +5,6 @@ export class ConfigModule {
   static forRoot(envFilePath: string, objectSchema?: Joi.PartialSchemaMap) {
     const baseSchema = Joi.object({
       DATABASE_URL: Joi.string().required(),
-      PORT: Joi.number().required(),
     });
 
     return NestConfigModule.forRoot({
