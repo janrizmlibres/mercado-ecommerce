@@ -49,6 +49,27 @@ services:
         - action: rebuild
           path: ./package.json
 
+  payments:
+    build:
+      context: .
+      dockerfile: ./apps/payments/Dockerfile
+      target: development
+    command: pnpm run start:dev payments
+    env_file:
+      - ./apps/payments/.env
+    ports:
+      - '3003:3003'
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/payments/src
+          target: /usr/src/app/apps/payments/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./package.json
+
   orders-db:
     image: postgres:17
     container_name: orders-db
