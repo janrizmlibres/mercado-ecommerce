@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  IsEmail,
   ValidateNested,
 } from 'class-validator';
 
@@ -20,4 +21,7 @@ export class CreatePaymentDto {
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
+
+  @IsEmail()
+  email: string;
 }

@@ -23,7 +23,7 @@ export class OrdersController {
     @Body() createOrderDto: CreateOrderDto,
     @CurrentUser() user: UserDto,
   ) {
-    return this.ordersService.create(createOrderDto, user.id);
+    return this.ordersService.create(createOrderDto, user);
   }
 
   @UseGuards(JwtAuthGuard)
