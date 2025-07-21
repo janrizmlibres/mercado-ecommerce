@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from './prisma.service';
+import { PAYMENTS_SERVICE } from '@app/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class OrdersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(PAYMENTS_SERVICE) private readonly paymentService: ClientProxy,
+  ) {}
 
-  create(createOrderDto: CreateOrderDto, userId: string) {
+  async create(createOrderDto: CreateOrderDto, userId: string) {
     const { orderItems, ...order } = createOrderDto;
 
-    return this.prismaService.order.create({
+    const newOrder = await this.prismaService.order.create({
       data: {
         ...order,
         userId,
@@ -21,6 +26,12 @@ export class OrdersService {
         },
       },
       include: { orderItems: true },
+    });
+
+    this.paymentService.send('create_checkout', {
+      value: order.totalPrice,
+      paymentId: newOrder.id,
+      items: orderItems,
     });
   }
 
