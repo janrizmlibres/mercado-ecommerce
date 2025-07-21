@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import axios from 'axios';
+import { CheckoutDto } from '@app/common';
 
 @Injectable()
 export class PaymentsService {
@@ -20,7 +21,7 @@ export class PaymentsService {
       })),
     };
 
-    const res = await axios.post<{ redirectUrl: string }>(
+    const res = await axios.post<CheckoutDto>(
       'https://pg-sandbox.paymaya.com/checkout/v1/checkouts',
       payload,
       {
@@ -35,6 +36,6 @@ export class PaymentsService {
       },
     );
 
-    return res.data.redirectUrl;
+    return res.data;
   }
 }

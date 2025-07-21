@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from './prisma.service';
-import { PAYMENTS_SERVICE } from '@app/common';
+import { CheckoutDto, PAYMENTS_SERVICE } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
@@ -16,20 +16,20 @@ export class OrdersService {
   async create(createOrderDto: CreateOrderDto, userId: string) {
     const { orderItems, ...order } = createOrderDto;
 
-    const newOrder = await this.prismaService.order.create({
+    let newOrder = await this.prismaService.order.create({
       data: {
         ...order,
         userId,
+        invoiceId: '',
         orderItems: {
           createMany: {
             data: orderItems,
           },
         },
       },
-      include: { orderItems: true },
     });
 
-    const redirectUrl = await firstValueFrom<string>(
+    const checkout = await firstValueFrom<CheckoutDto>(
       this.paymentService.send('create_checkout', {
         value: order.totalPrice,
         paymentId: newOrder.id,
@@ -37,7 +37,13 @@ export class OrdersService {
       }),
     );
 
-    return { newOrder, redirectUrl };
+    newOrder = await this.prismaService.order.update({
+      where: { id: newOrder.id },
+      data: { invoiceId: checkout.checkoutId },
+      include: { orderItems: true },
+    });
+
+    return { order: newOrder, redirectUrl: checkout.redirectUrl };
   }
 
   findAll() {
