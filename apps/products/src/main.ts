@@ -5,7 +5,7 @@ import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(ProductsModule);
-  app.use(app.get(Logger));
+  app.useLogger(app.get(Logger));
   const configService = app.get(ConfigService);
   await app.listen(configService.get('PORT') ?? 3004);
 }
