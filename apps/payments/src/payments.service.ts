@@ -44,6 +44,7 @@ export class PaymentsService {
 
     this.notificationsService.emit('notify_email', {
       email: paymentData.email,
+      text: `Your payment of Php${paymentData.value} has completed successfully.`,
     });
 
     return res.data;
