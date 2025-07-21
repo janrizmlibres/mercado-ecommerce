@@ -4,6 +4,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { PrismaService } from './prisma.service';
 import { PAYMENTS_SERVICE } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class OrdersService {
@@ -28,13 +29,15 @@ export class OrdersService {
       include: { orderItems: true },
     });
 
-    const checkoutUrl = this.paymentService.send('create_checkout', {
-      value: order.totalPrice,
-      paymentId: newOrder.id,
-      items: orderItems,
-    });
+    const redirectUrl = await firstValueFrom<string>(
+      this.paymentService.send('create_checkout', {
+        value: order.totalPrice,
+        paymentId: newOrder.id,
+        items: orderItems,
+      }),
+    );
 
-    return { newOrder, checkoutUrl };
+    return { newOrder, redirectUrl };
   }
 
   findAll() {

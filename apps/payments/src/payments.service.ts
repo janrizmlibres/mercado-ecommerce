@@ -11,10 +11,16 @@ export class PaymentsService {
         currency: 'PHP',
       },
       requestReferenceNumber: paymentData.paymentId,
-      items: paymentData.items,
+      items: paymentData.items.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+        totalAmount: {
+          value: item.price,
+        },
+      })),
     };
 
-    const res = await axios.post<{ checkoutUrl: string }>(
+    const res = await axios.post<{ redirectUrl: string }>(
       'https://pg-sandbox.paymaya.com/checkout/v1/checkouts',
       payload,
       {
@@ -23,12 +29,12 @@ export class PaymentsService {
           Authorization:
             'Basic ' +
             Buffer.from(
-              'pk-lNAUk1jk7VPnf7koOT1uoGJoZJjmAxrbjpj6urB8EIA',
+              'pk-eo4sL393CWU5KmveJUaW8V730TTei2zY8zE4dHJDxkF:',
             ).toString('base64'),
         },
       },
     );
 
-    return res.data.checkoutUrl;
+    return res.data.redirectUrl;
   }
 }
