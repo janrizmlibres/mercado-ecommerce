@@ -20,10 +20,6 @@ USER app
 # Install dependencies as app user
 RUN pnpm install
 
-# Copy Prisma schema and generate client
-COPY --chown=app:app apps/payments/prisma ./prisma
-RUN pnpm prisma generate
-
 # Copy source code (will be overridden by watch sync)
 COPY --chown=app:app apps/payments apps/payments
 COPY --chown=app:app libs libs
@@ -46,4 +42,4 @@ RUN pnpm install --prod
 
 COPY --from=development /usr/src/app/dist ./dist
 
-CMD ["pnpm", "run", "start:prod", "dist/apps/payments/main"]
+CMD ["node", "dist/apps/payments/main"]
