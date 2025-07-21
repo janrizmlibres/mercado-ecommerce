@@ -13,12 +13,16 @@ import { JwtStrategy } from './strategies/jwt.strategy';
   imports: [
     UsersModule,
     LoggerModule,
-    ConfigModule.forRoot('./apps/auth/.env', {
-      JWT_SECRET: Joi.string().required(),
-      JWT_EXPIRATION: Joi.string().required(),
-      HTTP_PORT: Joi.number().required(),
-      TCP_PORT: Joi.number().required(),
-    }),
+    ConfigModule.forRoot(
+      './apps/auth/.env',
+      Joi.object({
+        DATABASE_URL: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION: Joi.string().required(),
+        HTTP_PORT: Joi.number().required(),
+        TCP_PORT: Joi.number().required(),
+      }),
+    ),
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

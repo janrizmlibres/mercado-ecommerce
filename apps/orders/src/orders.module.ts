@@ -10,11 +10,15 @@ import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
     LoggerModule,
-    ConfigModule.forRoot('./apps/orders/.env', {
-      PORT: Joi.number().required(),
-      AUTH_HOST: Joi.string().required(),
-      AUTH_PORT: Joi.number().required(),
-    }),
+    ConfigModule.forRoot(
+      './apps/orders/.env',
+      Joi.object({
+        DATABASE_URL: Joi.string().required(),
+        PORT: Joi.number().required(),
+        AUTH_HOST: Joi.string().required(),
+        AUTH_PORT: Joi.number().required(),
+      }),
+    ),
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
