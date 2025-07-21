@@ -1,12 +1,13 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
+import { PaymentDataDto } from './dto/payment-data.dto';
 
-@Controller()
+@Controller('payments')
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) {}
 
-  @Get()
-  getHello(): string {
-    return this.paymentsService.getHello();
+  @Post()
+  createMayaCheckout(paymentData: PaymentDataDto) {
+    return this.paymentsService.createMayaCheckout(paymentData);
   }
 }
