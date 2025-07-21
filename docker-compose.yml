@@ -70,6 +70,31 @@ services:
         - action: rebuild
           path: ./package.json
 
+  products:
+    build:
+      context: .
+      dockerfile: ./apps/products/Dockerfile
+      target: development
+    command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev products"
+    depends_on:
+      - products-db
+    env_file:
+      - ./apps/products/.env
+    ports:
+      - '3004:3004'
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/products/src
+          target: /usr/src/app/apps/products/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./apps/products/prisma/migrations
+        - action: rebuild
+          path: ./package.json
+
   orders-db:
     image: postgres:17
     container_name: orders-db
@@ -96,6 +121,20 @@ services:
     volumes:
       - auth-db-data:/var/lib/postgresql/data
 
+  products-db:
+    image: postgres:17
+    container_name: products-db
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=products
+    ports:
+      - 5434:5432
+    volumes:
+      - products-db-data:/var/lib/postgresql/data
+
 volumes:
   orders-db-data:
   auth-db-data:
+  products-db-data:
