@@ -28,11 +28,13 @@ export class OrdersService {
       include: { orderItems: true },
     });
 
-    this.paymentService.send('create_checkout', {
+    const checkoutUrl = this.paymentService.send('create_checkout', {
       value: order.totalPrice,
       paymentId: newOrder.id,
       items: orderItems,
     });
+
+    return { newOrder, checkoutUrl };
   }
 
   findAll() {
