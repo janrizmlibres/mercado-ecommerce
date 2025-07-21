@@ -11,6 +11,7 @@ datasource db {
 
 model OrderItem {
   productId String
+  name      String
   quantity  Int     @default(1)
   price     Decimal @default(0)
   Order     Order   @relation(fields: [orderId], references: [id])

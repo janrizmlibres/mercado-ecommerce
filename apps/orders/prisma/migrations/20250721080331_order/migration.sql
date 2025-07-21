@@ -4,6 +4,7 @@ CREATE TYPE "Status" AS ENUM ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCEL
 -- CreateTable
 CREATE TABLE "OrderItem" (
     "productId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 1,
     "price" DECIMAL(65,30) NOT NULL DEFAULT 0,
     "orderId" TEXT NOT NULL,
