@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import axios from 'axios';
-import { CheckoutDto } from '@app/common';
+import { CheckoutDto, NOTIFICATIONS_SERVICE } from '@app/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class PaymentsService {
+  constructor(
+    @Inject(NOTIFICATIONS_SERVICE)
+    private readonly notificationsService: ClientProxy,
+  ) {}
+
   async createMayaCheckout(paymentData: CreatePaymentDto) {
     const payload = {
       totalAmount: {
@@ -35,6 +41,10 @@ export class PaymentsService {
         },
       },
     );
+
+    this.notificationsService.emit('notify_email', {
+      email: paymentData.email,
+    });
 
     return res.data;
   }
