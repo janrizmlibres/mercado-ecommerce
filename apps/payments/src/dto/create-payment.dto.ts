@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class PaymentDataDto {
+export class CreatePaymentDto {
   @IsNumber()
   value: number;
 

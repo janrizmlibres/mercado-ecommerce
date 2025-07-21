@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PaymentDataDto } from './dto/payment-data.dto';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 import axios from 'axios';
 
 @Injectable()
 export class PaymentsService {
-  async createMayaCheckout(paymentData: PaymentDataDto) {
+  async createMayaCheckout(paymentData: CreatePaymentDto) {
     const payload = {
       totalAmount: {
         value: paymentData.value,
