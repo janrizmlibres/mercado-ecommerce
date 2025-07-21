@@ -7,7 +7,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OrderItemDto } from './order-item.dto';
+import { OrderItemDto } from '@app/common';
 import { Status } from '.prisma/client';
 
 export class CreateOrderDto {

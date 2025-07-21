@@ -5,6 +5,10 @@ export class OrderItemDto {
   @IsNotEmpty()
   productId: string;
 
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
   @IsNumber()
   quantity: number;
 
