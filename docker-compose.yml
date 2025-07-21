@@ -57,8 +57,6 @@ services:
     command: pnpm run start:dev payments
     env_file:
       - ./apps/payments/.env
-    ports:
-      - '3003:3003'
     develop:
       watch:
         - action: sync
@@ -92,6 +90,25 @@ services:
           target: /usr/src/app/libs/common/src
         - action: rebuild
           path: ./apps/products/prisma/migrations
+        - action: rebuild
+          path: ./package.json
+
+  notifications:
+    build:
+      context: .
+      dockerfile: ./apps/notifications/Dockerfile
+      target: development
+    command: pnpm run start:dev notifications
+    env_file:
+      - ./apps/notifications/.env
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/notifications/src
+          target: /usr/src/app/apps/notifications/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
         - action: rebuild
           path: ./package.json
 
