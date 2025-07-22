@@ -1,9 +1,19 @@
 import { Module } from '@nestjs/common';
 import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
+import { ConfigModule, LoggerModule } from '@app/common';
+import * as Joi from 'joi';
 
 @Module({
-  imports: [],
+  imports: [
+    LoggerModule,
+    ConfigModule.forRoot(
+      './apps/gateway/.env',
+      Joi.object({
+        PORT: Joi.number().required(),
+      }),
+    ),
+  ],
   controllers: [GatewayController],
   providers: [GatewayService],
 })
