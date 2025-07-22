@@ -1,7 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { UserDto } from '../dto';
 
 interface RequestWithUser {
-  user: object;
+  user: UserDto;
 }
 
 const getCurrentUserByContext = (context: ExecutionContext) => {
