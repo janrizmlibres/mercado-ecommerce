@@ -1,8 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { GatewayModule } from './gateway.module';
+import { ConfigService } from '@nestjs/config';
+import { Logger } from 'nestjs-pino';
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
-  await app.listen(process.env.port ?? 3000);
+  app.useLogger(app.get(Logger));
+  const configService = app.get(ConfigService);
+  await app.listen(configService.get<number>('PORT')!);
 }
-bootstrap();
+void bootstrap();
