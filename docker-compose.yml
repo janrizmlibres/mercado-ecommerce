@@ -79,7 +79,7 @@ services:
     env_file:
       - ./apps/products/.env
     ports:
-      - '3004:3004'
+      - '3002:3002'
     develop:
       watch:
         - action: sync
@@ -106,6 +106,27 @@ services:
         - action: sync
           path: ./apps/notifications/src
           target: /usr/src/app/apps/notifications/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./package.json
+
+  gateway:
+    build:
+      context: .
+      dockerfile: ./apps/gateway/Dockerfile
+      target: development
+    command: pnpm run start:dev gateway
+    env_file:
+      - ./apps/gateway/.env
+    ports:
+      - '3003:3003'
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/gateway/src
+          target: /usr/src/app/apps/gateway/src
         - action: sync
           path: ./libs/common/src
           target: /usr/src/app/libs/common/src
