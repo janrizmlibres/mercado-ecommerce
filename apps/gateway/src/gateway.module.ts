@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { GatewayController } from './gateway.controller';
-import { GatewayService } from './gateway.service';
 import { ConfigModule, LoggerModule } from '@app/common';
 import * as Joi from 'joi';
 
@@ -14,7 +12,7 @@ import * as Joi from 'joi';
       }),
     ),
   ],
-  controllers: [GatewayController],
-  providers: [GatewayService],
+  controllers: [],
+  providers: [],
 })
 export class GatewayModule {}
