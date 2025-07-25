@@ -3,7 +3,6 @@ import { Type } from 'class-transformer';
 import { OrderItemDto } from '@app/common';
 import { Status } from '.prisma/client';
 import { Field, InputType } from '@nestjs/graphql';
-import { OrderItemModel } from '../models/order-item.model';
 
 @InputType()
 export class CreateOrderDto {
@@ -18,6 +17,6 @@ export class CreateOrderDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
-  @Field(() => [OrderItemModel])
+  @Field(() => [OrderItemDto])
   orderItems: OrderItemDto[];
 }
