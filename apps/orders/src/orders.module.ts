@@ -11,9 +11,20 @@ import { PrismaService } from './prisma.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import * as Joi from 'joi';
 import { ConfigService } from '@nestjs/config';
+import { GraphQLModule } from '@nestjs/graphql';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: {
+        federation: 2,
+      },
+    }),
     LoggerModule,
     ConfigModule.forRoot(
       './apps/orders/.env',
