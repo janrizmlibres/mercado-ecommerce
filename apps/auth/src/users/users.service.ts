@@ -58,4 +58,8 @@ export class UsersService {
 
     return user;
   }
+
+  findAll() {
+    return this.prismaService.user.findMany();
+  }
 }
