@@ -1,21 +1,22 @@
 import { Module } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { OrdersController } from './orders.controller';
 import {
   LoggerModule,
   ConfigModule,
   AUTH_SERVICE,
   PAYMENTS_SERVICE,
 } from '@app/common';
-import { PrismaService } from './prisma.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import * as Joi from 'joi';
 import { ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import {
   ApolloFederationDriver,
   ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
+import { OrdersController } from './orders.controller';
+import { OrdersResolver } from './orders.resolver';
+import { PrismaService } from './prisma.service';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
@@ -63,6 +64,6 @@ import {
     ]),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, PrismaService],
+  providers: [OrdersService, PrismaService, OrdersResolver],
 })
 export class OrdersModule {}

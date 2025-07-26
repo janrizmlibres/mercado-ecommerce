@@ -3,14 +3,15 @@ import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { CurrentUser, UserDto } from '@app/common';
 import { OrderModel } from './models/order.model';
+import { CreateOrderResponseModel } from './models/create-order-response.model';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Resolver(() => OrderModel)
 export class OrdersResolver {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Mutation(() => OrderModel)
-  createOrder(
+  @Mutation(() => CreateOrderResponseModel)
+  async createOrder(
     @Args('createOrderInput')
     createOrderInput: CreateOrderDto,
     @CurrentUser() user: UserDto,
