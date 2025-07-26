@@ -7,7 +7,7 @@ import { Field, InputType } from '@nestjs/graphql';
 @InputType()
 export class CreateOrderDto {
   @IsEnum(Status)
-  @Field()
+  @Field(() => Status)
   status: Status;
 
   @IsNumber()

@@ -1,4 +1,7 @@
-import { OmitType } from '@nestjs/mapped-types';
 import { CreateOrderDto } from './create-order.dto';
+import { InputType, OmitType } from '@nestjs/graphql';
 
-export class UpdateOrderDto extends OmitType(CreateOrderDto, ['orderItems']) {}
+@InputType()
+export class UpdateOrderDto extends OmitType(CreateOrderDto, [
+  'orderItems',
+] as const) {}

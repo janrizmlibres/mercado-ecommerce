@@ -1,7 +1,8 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
+@InputType()
 export class OrderItemDto {
   @IsString()
   @IsNotEmpty()
