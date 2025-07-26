@@ -68,10 +68,26 @@ export class OrdersService {
     });
   }
 
-  remove(id: string) {
-    return this.prismaService.order.delete({
-      where: { id },
-      include: { orderItems: true },
+  async remove(id: string) {
+    return await this.prismaService.$transaction(async (tx) => {
+      // Fetch order items before deletion
+      const orderItemsToDelete = await tx.orderItem.findMany({
+        where: { orderId: id },
+      });
+
+      // Delete order items
+      await tx.orderItem.deleteMany({
+        where: { orderId: id },
+      });
+
+      // Delete order
+      const deletedOrder = await tx.order.delete({
+        where: { id },
+        include: { orderItems: true },
+      });
+
+      deletedOrder.orderItems = orderItemsToDelete;
+      return deletedOrder;
     });
   }
 }
