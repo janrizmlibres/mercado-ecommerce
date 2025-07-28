@@ -57,6 +57,8 @@ services:
     command: pnpm run start:dev payments
     env_file:
       - ./apps/payments/.env
+    ports:
+      - '3004:3004'
     develop:
       watch:
         - action: sync
