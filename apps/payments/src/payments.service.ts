@@ -1,8 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import axios from 'axios';
-import { CheckoutDto, NOTIFICATIONS_SERVICE } from '@app/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { CheckoutDto, NOTIFICATIONS_SERVICE } from '@app/common';
+import axios from 'axios';
+import { CreatePaymentDto } from './dto/create-payment.dto';
+import { PaymentModel } from './models/payment.model';
 
 @Injectable()
 export class PaymentsService {
@@ -48,5 +49,9 @@ export class PaymentsService {
     });
 
     return res.data;
+  }
+
+  getPayments() {
+    return [{ checkoutId: '123', redirectUrl: 'null' }] as [PaymentModel];
   }
 }
