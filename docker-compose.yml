@@ -6,7 +6,7 @@ services:
       target: development
     command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev orders"
     depends_on:
-      - orders-db
+      - postgres-db
     env_file:
       - ./apps/orders/.env
     ports:
@@ -31,7 +31,7 @@ services:
       target: development
     command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev auth"
     depends_on:
-      - auth-db
+      - postgres-db
     env_file:
       - ./apps/auth/.env
     ports:
@@ -77,7 +77,7 @@ services:
       target: development
     command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev products"
     depends_on:
-      - products-db
+      - postgres-db
     env_file:
       - ./apps/products/.env
     ports:
@@ -135,46 +135,25 @@ services:
         - action: rebuild
           path: ./package.json
 
-  orders-db:
+  postgres-db:
     image: postgres:17
-    container_name: orders-db
+    container_name: postgres-db
     restart: always
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=orders
     ports:
       - 5432:5432
     volumes:
-      - orders-db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
 
-  auth-db:
-    image: postgres:17
-    container_name: auth-db
+  redis:
+    image: redis:alpine
     restart: always
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=users
     ports:
-      - 5433:5432
-    volumes:
-      - auth-db-data:/var/lib/postgresql/data
-
-  products-db:
-    image: postgres:17
-    container_name: products-db
-    restart: always
-    environment:
-      - POSTGRES_USER=root
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=products
-    ports:
-      - 5434:5432
-    volumes:
-      - products-db-data:/var/lib/postgresql/data
+      - 6379:6379
 
 volumes:
-  orders-db-data:
-  auth-db-data:
-  products-db-data:
+  db-data:
+  # auth-db-data:
+  # products-db-data:
