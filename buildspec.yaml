@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  pre-build:
+    commands:
+      - aws ecr get-login password
+  build:
+    commands:
+      - docker build -t orders -f ./apps/reservations/Dockerfile .
+      - docker tag orders:latest
+  post_build:
+    commands:
+      - docker push auth:latest
