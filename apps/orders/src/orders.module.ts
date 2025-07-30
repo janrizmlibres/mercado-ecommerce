@@ -17,6 +17,7 @@ import { OrdersController } from './orders.controller';
 import { OrdersResolver } from './orders.resolver';
 import { PrismaService } from './prisma.service';
 import * as Joi from 'joi';
+import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import * as Joi from 'joi';
       './apps/orders/.env',
       Joi.object({
         DATABASE_URL: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
         PORT: Joi.number().required(),
         AUTH_HOST: Joi.string().required(),
         AUTH_PORT: Joi.number().required(),
@@ -38,6 +40,15 @@ import * as Joi from 'joi';
         PAYMENTS_PORT: Joi.number().required(),
       }),
     ),
+    RedisModule.forRootAsync({
+      useFactory: (configService: ConfigService) => ({
+        type: 'client',
+        options: {
+          url: configService.getOrThrow('REDIS_URL'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
