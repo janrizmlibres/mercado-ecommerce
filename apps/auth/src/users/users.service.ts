@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -8,19 +9,28 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService } from './prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { GetUserDto } from './dto/get-user.dto';
+import { Cacheable } from 'cacheable';
+import { CACHE_INSTANCE } from '@app/common';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(CACHE_INSTANCE) private readonly cache: Cacheable,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     await this.validateCreateUserDto(createUserDto);
-    return this.prismaService.user.create({
+    const user = await this.prismaService.user.create({
       data: {
         ...createUserDto,
         password: await bcrypt.hash(createUserDto.password, 10),
       },
     });
+
+    const cacheKey = `user:${user.id}`;
+    await this.cache.set(cacheKey, user);
+    return user;
   }
 
   private async validateCreateUserDto(createUserDto: CreateUserDto) {
@@ -48,6 +58,10 @@ export class UsersService {
   }
 
   async getUser(getUserDto: GetUserDto) {
+    const cacheKey = `user:${getUserDto.id}`;
+    const cachedUser = await this.cache.get(cacheKey);
+    if (cachedUser) return cachedUser;
+
     const user = await this.prismaService.user.findUnique({
       where: { id: getUserDto.id },
     });
@@ -56,6 +70,7 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    await this.cache.set(cacheKey, user);
     return user;
   }
 
