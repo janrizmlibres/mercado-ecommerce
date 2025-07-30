@@ -28,6 +28,7 @@ import {
       './apps/auth/.env',
       Joi.object({
         DATABASE_URL: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION: Joi.string().required(),
         HTTP_PORT: Joi.number().required(),
