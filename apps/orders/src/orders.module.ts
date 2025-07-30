@@ -5,6 +5,7 @@ import {
   ConfigModule,
   AUTH_SERVICE,
   PAYMENTS_SERVICE,
+  CACHE_INSTANCE,
 } from '@app/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
@@ -13,11 +14,12 @@ import {
   ApolloFederationDriver,
   ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
+import { createKeyv } from '@keyv/redis';
+import { Cacheable } from 'cacheable';
 import { OrdersController } from './orders.controller';
 import { OrdersResolver } from './orders.resolver';
 import { PrismaService } from './prisma.service';
 import * as Joi from 'joi';
-import { RedisModule } from '@nestjs-redis/client';
 
 @Module({
   imports: [
@@ -40,15 +42,6 @@ import { RedisModule } from '@nestjs-redis/client';
         PAYMENTS_PORT: Joi.number().required(),
       }),
     ),
-    RedisModule.forRootAsync({
-      useFactory: (configService: ConfigService) => ({
-        type: 'client',
-        options: {
-          url: configService.getOrThrow('REDIS_URL'),
-        },
-      }),
-      inject: [ConfigService],
-    }),
     ClientsModule.registerAsync([
       {
         name: AUTH_SERVICE,
@@ -75,6 +68,18 @@ import { RedisModule } from '@nestjs-redis/client';
     ]),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService, PrismaService, OrdersResolver],
+  providers: [
+    OrdersService,
+    PrismaService,
+    OrdersResolver,
+    {
+      provide: CACHE_INSTANCE,
+      useFactory: (configService: ConfigService) => {
+        const secondary = createKeyv(configService.getOrThrow('REDIS_URL'));
+        return new Cacheable({ secondary, ttl: 1000 * 60 * 5 });
+      },
+      inject: [ConfigService],
+    },
+  ],
 })
 export class OrdersModule {}
