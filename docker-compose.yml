@@ -7,6 +7,7 @@ services:
     command: sh -c "pnpm run migrate && pnpm prisma generate && pnpm run start:dev orders"
     depends_on:
       - postgres-db
+      - redis
     env_file:
       - ./apps/orders/.env
     ports:
