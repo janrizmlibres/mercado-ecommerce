@@ -15,6 +15,8 @@ import { authContext } from './auth.context';
       useFactory: (configService: ConfigService) => ({
         server: {
           context: authContext,
+          graphiql: true,
+          playground: false,
         },
         gateway: {
           supergraphSdl: new IntrospectAndCompose({
