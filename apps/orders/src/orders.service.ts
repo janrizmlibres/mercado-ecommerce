@@ -74,8 +74,6 @@ export class OrdersService {
     const cachedOrder = await this.cache.get(cacheKey);
 
     if (!cachedOrder) {
-      console.log('Order not cached');
-
       const order = await this.prismaService.order.findUniqueOrThrow({
         where: { id },
         include: { orderItems: true },
