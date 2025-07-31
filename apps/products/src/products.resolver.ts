@@ -26,7 +26,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => ProductModel)
-  update(
+  updateProduct(
     @Args('id', { type: () => String }) id: string,
     @Args('updateProductInput') updateProductInput: UpdateProductDto,
   ) {
@@ -34,7 +34,7 @@ export class ProductsResolver {
   }
 
   @Mutation(() => ProductModel)
-  remove(@Args('id', { type: () => String }) id: string) {
+  removeProduct(@Args('id', { type: () => String }) id: string) {
     return this.productsService.remove(id);
   }
 }

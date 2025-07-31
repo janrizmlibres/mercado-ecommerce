@@ -30,7 +30,7 @@ export class OrdersResolver {
   }
 
   @Mutation(() => OrderModel)
-  update(
+  updateOrder(
     @Args('id', { type: () => String }) id: string,
     @Args('updateOrderInput') updateOrderInput: UpdateOrderDto,
   ) {
@@ -38,7 +38,7 @@ export class OrdersResolver {
   }
 
   @Mutation(() => OrderModel)
-  remove(@Args('id', { type: () => String }) id: string) {
+  removeOrder(@Args('id', { type: () => String }) id: string) {
     return this.ordersService.remove(id);
   }
 }
