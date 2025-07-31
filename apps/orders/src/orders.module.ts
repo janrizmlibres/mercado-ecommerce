@@ -35,7 +35,8 @@ import * as Joi from 'joi';
       Joi.object({
         DATABASE_URL: Joi.string().required(),
         REDIS_URL: Joi.string().required(),
-        PORT: Joi.number().required(),
+        HTTP_PORT: Joi.number().required(),
+        TCP_PORT: Joi.number().required(),
         AUTH_HOST: Joi.string().required(),
         AUTH_PORT: Joi.number().required(),
         PAYMENTS_HOST: Joi.string().required(),
