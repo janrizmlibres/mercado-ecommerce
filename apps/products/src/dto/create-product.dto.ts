@@ -6,8 +6,11 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  ValidateNested,
 } from 'class-validator';
 import { Category } from '.prisma/client';
+import { VariantDto } from './variant.dto';
+import { Type } from 'class-transformer';
 
 @InputType()
 export class CreateProductDto {
@@ -29,6 +32,12 @@ export class CreateProductDto {
   @IsEnum(Category)
   @Field(() => Category)
   category: Category;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => VariantDto)
+  @Field(() => [VariantDto])
+  variants: VariantDto[];
 
   @IsNumber()
   @Field()

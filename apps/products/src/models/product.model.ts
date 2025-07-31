@@ -1,6 +1,6 @@
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { Category } from '.prisma/client';
-import { VariantModel } from './variant.model';
+import { VariantDto } from '../dto/variant.dto';
 
 registerEnumType(Category, { name: 'Category' });
 
@@ -18,8 +18,8 @@ export class ProductModel {
   @Field(() => Category)
   category: Category;
 
-  @Field(() => [VariantModel])
-  variant: VariantModel[];
+  @Field(() => [VariantDto])
+  variant: VariantDto[];
 
   @Field()
   price: number;
