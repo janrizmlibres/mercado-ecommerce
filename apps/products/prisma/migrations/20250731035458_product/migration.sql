@@ -7,7 +7,7 @@ CREATE TABLE "public"."Product" (
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "imageUrls" TEXT[],
-    "Category" "public"."Category" NOT NULL,
+    "category" "public"."Category" NOT NULL,
     "price" DECIMAL(65,30) NOT NULL,
     "stock" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

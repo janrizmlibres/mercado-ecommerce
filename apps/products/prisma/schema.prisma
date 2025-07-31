@@ -14,8 +14,8 @@ model Product {
   name        String
   description String
   imageUrls   String[]
-  Category    Category
-  Variant     Variant[]
+  category    Category
+  variants    Variant[]
   price       Decimal
   stock       Int
   createdAt   DateTime  @default(now())
