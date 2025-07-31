@@ -7,6 +7,9 @@ registerEnumType(Category, { name: 'Category' });
 @ObjectType()
 export class ProductModel {
   @Field()
+  id: string;
+
+  @Field()
   name: string;
 
   @Field()
@@ -19,7 +22,7 @@ export class ProductModel {
   category: Category;
 
   @Field(() => [VariantDto])
-  variant: VariantDto[];
+  variants: VariantDto[];
 
   @Field()
   price: number;
