@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "migrate": "dotenv -e .env.local -- pnpm prisma migrate dev"
+    "migrate": "dotenv -e .env.local -- pnpm prisma migrate dev",
+    "reset": "dotenv -e .env.local -- pnpm prisma migrate reset"
   },
   "author": "",
   "license": "ISC",
