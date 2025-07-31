@@ -6,11 +6,6 @@ export class VariantDto {
   @IsString()
   @IsNotEmpty()
   @Field()
-  productId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Field()
   name: string;
 
   @IsArray()
