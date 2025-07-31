@@ -1,21 +1,54 @@
 import { Module } from '@nestjs/common';
 import { CartService } from './cart.service';
-import { CACHE_INSTANCE, ConfigModule, LoggerModule } from '@app/common';
+import {
+  CACHE_INSTANCE,
+  ConfigModule,
+  LoggerModule,
+  ORDERS_SERVICE,
+} from '@app/common';
 import { CartResolver } from './cart.resolver';
 import { ConfigService } from '@nestjs/config';
 import { createKeyv } from '@keyv/redis';
 import { Cacheable } from 'cacheable';
 import * as Joi from 'joi';
+import { GraphQLModule } from '@nestjs/graphql';
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
+      autoSchemaFile: {
+        federation: 2,
+      },
+    }),
     LoggerModule,
     ConfigModule.forRoot(
       'apps/cart/.env',
       Joi.object({
         REDIS_URL: Joi.string().required(),
+        PORT: Joi.number().required(),
+        ORDERS_HOST: Joi.string().required(),
+        ORDERS_PORT: Joi.number().required(),
       }),
     ),
+    ClientsModule.registerAsync([
+      {
+        name: ORDERS_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.getOrThrow('ORDERS_HOST'),
+            port: configService.getOrThrow('ORDERS_PORT'),
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   providers: [
     CartService,
