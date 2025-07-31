@@ -1,16 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { CACHE_INSTANCE } from '@app/common';
+import { Cacheable } from 'cacheable';
 
 @Injectable()
 export class ProductsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    @Inject(CACHE_INSTANCE) private readonly redisCache: Cacheable,
+  ) {}
 
-  create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto) {
     const { variants, ...product } = createProductDto;
 
-    return this.prismaService.product.create({
+    const newProduct = await this.prismaService.product.create({
       data: {
         ...product,
         variants: {
@@ -20,28 +25,51 @@ export class ProductsService {
         },
       },
     });
+
+    const cacheKey = `product:${newProduct.id}`;
+    await this.redisCache.set(cacheKey, newProduct);
+    return newProduct;
   }
 
   findAll() {
     return this.prismaService.product.findMany();
   }
 
-  findOne(id: string) {
-    return this.prismaService.product.findUniqueOrThrow({
-      where: { id },
-    });
+  async findOne(id: string) {
+    const cacheKey = `product:${id}`;
+    const cachedProduct = await this.redisCache.get(cacheKey);
+
+    if (!cachedProduct) {
+      const product = await this.prismaService.product.findUniqueOrThrow({
+        where: { id },
+      });
+      await this.redisCache.set(cacheKey, product);
+      return product;
+    }
+
+    return cachedProduct;
   }
 
-  update(id: string, updateProductDto: UpdateProductDto) {
-    return this.prismaService.product.update({
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    const updatedProduct = await this.prismaService.product.update({
       where: { id },
       data: updateProductDto,
     });
+
+    const cacheKey = `product:${id}`;
+    await this.redisCache.set(cacheKey, updatedProduct);
+
+    return updatedProduct;
   }
 
-  remove(id: string) {
-    return this.prismaService.product.delete({
+  async remove(id: string) {
+    const deletedProduct = await this.prismaService.product.delete({
       where: { id },
     });
+
+    const cacheKey = `product:${id}`;
+    await this.redisCache.delete(cacheKey);
+
+    return deletedProduct;
   }
 }
