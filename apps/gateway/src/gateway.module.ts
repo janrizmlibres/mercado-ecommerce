@@ -33,6 +33,14 @@ import { authContext } from './auth.context';
                 name: 'payments',
                 url: configService.getOrThrow('PAYMENTS_GRAPHQL_URL'),
               },
+              {
+                name: 'products',
+                url: configService.getOrThrow('PRODUCTS_GRAPHQL_URL'),
+              },
+              {
+                name: 'cart',
+                url: configService.getOrThrow('CART_GRAPHQL_URL'),
+              },
             ],
           }),
           buildService: ({ url }) => {
@@ -71,6 +79,10 @@ import { authContext } from './auth.context';
         AUTH_HOST: Joi.string().required(),
         AUTH_PORT: Joi.string().required(),
         ORDERS_GRAPHQL_URL: Joi.string().required(),
+        AUTH_GRAPHQL_URL: Joi.string().required(),
+        PAYMENTS_GRAPHQL_URL: Joi.string().required(),
+        PRODUCTS_GRAPHQL_URL: Joi.string().required(),
+        CART_GRAPHQL_URL: Joi.string().required(),
       }),
     ),
   ],
