@@ -1,8 +1,8 @@
 -- CreateEnum
-CREATE TYPE "Status" AS ENUM ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED');
+CREATE TYPE "public"."Status" AS ENUM ('PENDING', 'PAID', 'SHIPPED', 'DELIVERED', 'CANCELLED');
 
 -- CreateTable
-CREATE TABLE "OrderItem" (
+CREATE TABLE "public"."OrderItem" (
     "productId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 1,
@@ -13,10 +13,10 @@ CREATE TABLE "OrderItem" (
 );
 
 -- CreateTable
-CREATE TABLE "Order" (
+CREATE TABLE "public"."Order" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'PENDING',
+    "status" "public"."Status" NOT NULL DEFAULT 'PENDING',
     "totalPrice" DECIMAL(65,30) NOT NULL DEFAULT 0,
     "invoiceId" TEXT NOT NULL,
     "timestamp" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -25,4 +25,4 @@ CREATE TABLE "Order" (
 );
 
 -- AddForeignKey
-ALTER TABLE "OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "public"."OrderItem" ADD CONSTRAINT "OrderItem_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "public"."Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
