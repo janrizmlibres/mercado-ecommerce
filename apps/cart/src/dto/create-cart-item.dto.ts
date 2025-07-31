@@ -1,6 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { CartVariantDto } from './cart-variant.dto';
+import { Type } from 'class-transformer';
 
 @InputType()
 export class CreateCartItemDto {
@@ -13,6 +20,9 @@ export class CreateCartItemDto {
   @Field()
   quantity: number;
 
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CartVariantDto)
   @Field(() => [CartVariantDto])
   variants: CartVariantDto[];
 }
