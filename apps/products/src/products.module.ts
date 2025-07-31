@@ -4,6 +4,7 @@ import { ProductsService } from './products.service';
 import { ConfigModule, LoggerModule } from '@app/common';
 import * as Joi from 'joi';
 import { PrismaService } from './prisma.service';
+import { ProductsResolver } from './products.resolver';
 
 @Module({
   imports: [
@@ -17,6 +18,6 @@ import { PrismaService } from './prisma.service';
     ),
   ],
   controllers: [ProductsController],
-  providers: [ProductsService, PrismaService],
+  providers: [ProductsService, PrismaService, ProductsResolver],
 })
 export class ProductsModule {}

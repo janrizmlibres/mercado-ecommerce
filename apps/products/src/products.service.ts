@@ -8,8 +8,17 @@ export class ProductsService {
   constructor(private readonly prismaService: PrismaService) {}
 
   create(createProductDto: CreateProductDto) {
+    const { variants, ...product } = createProductDto;
+
     return this.prismaService.product.create({
-      data: createProductDto,
+      data: {
+        ...product,
+        variants: {
+          createMany: {
+            data: variants,
+          },
+        },
+      },
     });
   }
 
