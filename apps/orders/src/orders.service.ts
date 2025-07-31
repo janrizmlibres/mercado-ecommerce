@@ -17,7 +17,7 @@ export class OrdersService {
   constructor(
     private readonly prismaService: PrismaService,
     @Inject(PAYMENTS_SERVICE) private readonly paymentService: ClientProxy,
-    @Inject(CACHE_INSTANCE) private readonly cache: Cacheable,
+    @Inject(CACHE_INSTANCE) private readonly redisCache: Cacheable,
   ) {}
 
   async create(createOrderDto: CreateOrderDto, { id: userId, email }: UserDto) {
@@ -58,7 +58,7 @@ export class OrdersService {
     );
 
     const cacheKey = `order:${newOrder.id}`;
-    await this.cache.set(cacheKey, newOrder);
+    await this.redisCache.set(cacheKey, newOrder);
 
     return { order: newOrder, redirectUrl };
   }
@@ -71,7 +71,7 @@ export class OrdersService {
 
   async findOne(id: string) {
     const cacheKey = `order:${id}`;
-    const cachedOrder = await this.cache.get(cacheKey);
+    const cachedOrder = await this.redisCache.get(cacheKey);
 
     if (!cachedOrder) {
       const order = await this.prismaService.order.findUniqueOrThrow({
@@ -79,7 +79,7 @@ export class OrdersService {
         include: { orderItems: true },
       });
 
-      await this.cache.set(cacheKey, order);
+      await this.redisCache.set(cacheKey, order);
       return order;
     }
 
@@ -94,7 +94,7 @@ export class OrdersService {
     });
 
     const cacheKey = `order:${id}`;
-    await this.cache.set(cacheKey, updatedOrder);
+    await this.redisCache.set(cacheKey, updatedOrder);
 
     return updatedOrder;
   }
@@ -122,7 +122,7 @@ export class OrdersService {
     });
 
     const cacheKey = `order:${id}`;
-    await this.cache.delete(cacheKey);
+    await this.redisCache.delete(cacheKey);
 
     return deletedOrder;
   }
