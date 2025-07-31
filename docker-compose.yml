@@ -136,6 +136,27 @@ services:
         - action: rebuild
           path: ./package.json
 
+  cart:
+    build:
+      context: .
+      dockerfile: ./apps/cart/Dockerfile
+      target: development
+    command: pnpm run start:dev cart
+    env_file:
+      - ./apps/cart/.env
+    ports:
+      - '3005:3005'
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/cart/src
+          target: /usr/src/app/apps/cart/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./package.json
+
   postgres-db:
     image: postgres:17
     container_name: postgres-db
