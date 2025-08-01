@@ -36,7 +36,7 @@ export class UploadsController {
   constructor(private readonly uploadsService: UploadsService) {}
 
   @Post('image')
-  @UseInterceptors(FileInterceptor('file', multerOptions))
+  @UseInterceptors(FileInterceptor('image', multerOptions))
   uploadImage(@UploadedFile() file: Express.Multer.File) {
     return this.uploadsService.uploadImage(file);
   }
