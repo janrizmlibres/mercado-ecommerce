@@ -157,6 +157,27 @@ services:
         - action: rebuild
           path: ./package.json
 
+  uploads:
+    build:
+      context: .
+      dockerfile: ./apps/uploads/Dockerfile
+      target: development
+    command: pnpm run start:dev uploads
+    env_file:
+      - ./apps/uploads/.env
+    ports:
+      - '3006:3006'
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/uploads/src
+          target: /usr/src/app/apps/uploads/src
+        - action: sync
+          path: ./libs/common/src
+          target: /usr/src/app/libs/common/src
+        - action: rebuild
+          path: ./package.json
+
   postgres-db:
     image: postgres:17
     container_name: postgres-db
