@@ -167,6 +167,8 @@ services:
       - ./apps/uploads/.env
     ports:
       - '3006:3006'
+    volumes:
+      - ./images:/usr/src/app/images
     develop:
       watch:
         - action: sync
@@ -198,5 +200,3 @@ services:
 
 volumes:
   db-data:
-  # auth-db-data:
-  # products-db-data:
