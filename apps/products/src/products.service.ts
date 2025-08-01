@@ -24,6 +24,7 @@ export class ProductsService {
           },
         },
       },
+      include: { variants: true },
     });
 
     const cacheKey = `product:${newProduct.id}`;
@@ -32,16 +33,22 @@ export class ProductsService {
   }
 
   findAll() {
-    return this.prismaService.product.findMany();
+    return this.prismaService.product.findMany({
+      include: { variants: true },
+    });
   }
 
   async findOne(id: string) {
     const cacheKey = `product:${id}`;
     const cachedProduct = await this.redisCache.get(cacheKey);
+    console.log('Finding product');
 
     if (!cachedProduct) {
+      console.log('Product not cached');
+
       const product = await this.prismaService.product.findUniqueOrThrow({
         where: { id },
+        include: { variants: true },
       });
       await this.redisCache.set(cacheKey, product);
       return product;
@@ -54,6 +61,7 @@ export class ProductsService {
     const updatedProduct = await this.prismaService.product.update({
       where: { id },
       data: updateProductDto,
+      include: { variants: true },
     });
 
     const cacheKey = `product:${id}`;
@@ -63,8 +71,22 @@ export class ProductsService {
   }
 
   async remove(id: string) {
-    const deletedProduct = await this.prismaService.product.delete({
-      where: { id },
+    const deletedProduct = await this.prismaService.$transaction(async (tx) => {
+      const variantsToDelete = await tx.variant.findMany({
+        where: { productId: id },
+      });
+
+      await tx.variant.deleteMany({
+        where: { productId: id },
+      });
+
+      const deletedProduct = await tx.product.delete({
+        where: { id },
+        include: { variants: true },
+      });
+
+      deletedProduct.variants = variantsToDelete;
+      return deletedProduct;
     });
 
     const cacheKey = `product:${id}`;
