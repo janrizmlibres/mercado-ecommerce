@@ -5,11 +5,10 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
 import { OrderVariantDto } from './order-variant.dto';
 import { Type } from 'class-transformer';
 
-@ObjectType()
 @InputType()
 export class OrderItemDto {
   @IsString()
