@@ -32,7 +32,13 @@ export class OrdersService {
             invoiceId: '',
             orderItems: {
               createMany: {
-                data: orderItems,
+                data: orderItems.map((item) => ({
+                  ...item,
+                  variants: item.variants.map((v) => ({
+                    name: v.name,
+                    value: v.value,
+                  })),
+                })),
               },
             },
           },
