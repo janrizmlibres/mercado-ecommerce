@@ -6,8 +6,8 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { CartVariantDto } from './cart-variant.dto';
 import { Type } from 'class-transformer';
+import { OrderVariantDto } from '@app/common';
 
 @InputType()
 export class CreateCartItemDto {
@@ -22,7 +22,7 @@ export class CreateCartItemDto {
 
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CartVariantDto)
-  @Field(() => [CartVariantDto])
-  variants: CartVariantDto[];
+  @Type(() => OrderVariantDto)
+  @Field(() => [OrderVariantDto])
+  variants: OrderVariantDto[];
 }

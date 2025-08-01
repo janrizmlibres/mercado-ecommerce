@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CartVariantModel } from './cart-variant.model';
+import { OrderVariantDto } from '@app/common';
 
 @ObjectType()
 export class CartItemModel {
@@ -12,6 +12,6 @@ export class CartItemModel {
   @Field()
   quantity: number;
 
-  @Field(() => [CartVariantModel])
-  variants: CartVariantModel[];
+  @Field(() => [OrderVariantDto])
+  variants: OrderVariantDto[];
 }
