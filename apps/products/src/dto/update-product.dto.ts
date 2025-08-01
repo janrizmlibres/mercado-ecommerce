@@ -1,7 +1,7 @@
 import { CreateProductDto } from './create-product.dto';
-import { InputType, OmitType } from '@nestjs/graphql';
+import { InputType, OmitType, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateProductDto extends OmitType(CreateProductDto, [
-  'variants',
-]) {}
+export class UpdateProductDto extends PartialType(
+  OmitType(CreateProductDto, ['variants'] as const),
+) {}
