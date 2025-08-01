@@ -26,8 +26,6 @@ import {
       Joi.object({
         REDIS_URL: Joi.string().required(),
         PORT: Joi.number().required(),
-        ORDERS_HOST: Joi.string().required(),
-        ORDERS_PORT: Joi.number().required(),
       }),
     ),
   ],
