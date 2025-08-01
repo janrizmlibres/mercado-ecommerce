@@ -5,12 +5,16 @@ import { UpdateCartItemDto } from './dto/update-cart.dto';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { CartModel } from './models/cart.model';
 import { randomUUID } from 'crypto';
+import { CartItemModel } from './models/cart-item.model';
 
 @Injectable()
 export class CartService {
   constructor(@Inject(CACHE_INSTANCE) private readonly redis: Cacheable) {}
 
-  async createItem({ id }: UserDto, createCartItemDto: CreateCartItemDto) {
+  async createItem(
+    { id }: UserDto,
+    createCartItemDto: CreateCartItemDto,
+  ): Promise<CartModel> {
     const cacheKey = `cart:${id}`;
     const cart = await this.findCart(cacheKey);
 
@@ -55,7 +59,7 @@ export class CartService {
         throw error;
       }
 
-      const cart = {
+      const cart: CartModel = {
         userId: id,
         items: [],
         createdAt: new Date(),
@@ -81,7 +85,7 @@ export class CartService {
     id: string,
     { id: userId }: UserDto,
     updateCartItemDto: UpdateCartItemDto,
-  ) {
+  ): Promise<CartItemModel> {
     const cacheKey = `cart:${userId}`;
     const cart = await this.findCart(cacheKey);
 
@@ -101,7 +105,7 @@ export class CartService {
     return item;
   }
 
-  async removeItem(id: string, { id: userId }: UserDto) {
+  async removeItem(id: string, { id: userId }: UserDto): Promise<CartModel> {
     const cacheKey = `cart:${userId}`;
     const cart = await this.findCart(cacheKey);
 
