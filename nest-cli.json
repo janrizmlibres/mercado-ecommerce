@@ -79,6 +79,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/cart/tsconfig.app.json"
       }
+    },
+    "uploads": {
+      "type": "application",
+      "root": "apps/uploads",
+      "entryFile": "main",
+      "sourceRoot": "apps/uploads/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/uploads/tsconfig.app.json"
+      }
     }
   },
   "monorepo": true,
