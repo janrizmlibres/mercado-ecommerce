@@ -10,7 +10,7 @@ import { CurrentUser, UserDto } from '@app/common';
 export class CartResolver {
   constructor(private readonly cartService: CartService) {}
 
-  @Mutation(() => CartItemModel)
+  @Mutation(() => CartModel)
   createItem(
     @Args('createCartItemInput') createCartItemInput: CreateCartItemDto,
     @CurrentUser() user: UserDto,
@@ -18,7 +18,7 @@ export class CartResolver {
     return this.cartService.createItem(user, createCartItemInput);
   }
 
-  @Query(() => [CartModel], { name: 'cart' })
+  @Query(() => CartModel, { name: 'cart' })
   find(@CurrentUser() user: UserDto) {
     return this.cartService.find(user);
   }
@@ -32,7 +32,7 @@ export class CartResolver {
     return this.cartService.updateItem(id, user, updateProductInput);
   }
 
-  @Mutation(() => CartItemModel)
+  @Mutation(() => CartModel)
   removeItem(
     @Args('id', { type: () => String }) id: string,
     @CurrentUser() user: UserDto,
