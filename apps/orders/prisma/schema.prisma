@@ -14,6 +14,7 @@ model OrderItem {
   name      String
   quantity  Int     @default(1)
   price     Decimal @default(0)
+  variants  Json
   Order     Order   @relation(fields: [orderId], references: [id])
   orderId   String
 

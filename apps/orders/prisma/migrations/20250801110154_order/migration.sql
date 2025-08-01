@@ -7,6 +7,7 @@ CREATE TABLE "public"."OrderItem" (
     "name" TEXT NOT NULL,
     "quantity" INTEGER NOT NULL DEFAULT 1,
     "price" DECIMAL(65,30) NOT NULL DEFAULT 0,
+    "variants" JSONB NOT NULL,
     "orderId" TEXT NOT NULL,
 
     CONSTRAINT "OrderItem_pkey" PRIMARY KEY ("orderId","productId")
