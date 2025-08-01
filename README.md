@@ -1,98 +1,152 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Mercado
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+![GitHub Release](https://img.shields.io/github/v/release/janrizmlibres/mercado-ecommerce?color=orange)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![Screenshot](architecture-diagram.png)
 
-## Description
+## 📝 Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Mercado is a comprehensive, production-ready e-commerce backend built on a scalable microservices architecture using NestJS. This project simulates a real-world, distributed system by implementing 8 distinct services—including authentication, payments, and notifications—all unified behind a GraphQL Federation gateway. It demonstrates best practices in domain-driven design, hybrid data persistence, and resilient, containerized deployments.
 
-## Project setup
+## 📖 Table of Contents
+
+- [📝 Description](#-description)
+- [✨ Features](#-features)
+- [💻 Technologies Used](#️-technologies-used)
+- [🛠️ Setup Project](#-setup-project)
+  - [🍴 Prerequisites](#-prerequisites)
+  - [🚀 Install Project](#-install-project)
+- [🤝 Contributing and Support](#-contributing-and-support)
+  - [⚒️ How to Contribute](#️-how-to-contribute)
+  - [📩 Bug Report](#-bug-report)
+- [📜 Credits](#-credits)
+- [📞 Contact Me](#-contact-me)
+- [📋 License](#-license)
+
+## ✨ Features
+
+👉 **True Microservices Architecture**: Features 8 distinct services (Auth, Products, Cart, Orders, Payments, Notifications, Uploads, Gateway) with clean domain boundaries.
+
+👉 **GraphQL Federation**: Utilizes Apollo Gateway to create a seamless, unified data graph from multiple underlying GraphQL services.
+
+👉 **Secure JWT Authentication**: A dedicated auth service handles user registration and login, securing the system with JSON Web Tokens.
+
+👉 **Hybrid Data Persistence**: Employs PostgreSQL with Prisma for critical, structured data (Users, Products, Orders) and Redis for high-speed, ephemeral data like shopping carts.
+
+👉 **Real-World Payment Processing**: Integrates with the PayMaya API to handle actual test transactions, not just mock data.
+
+👉 **Reliable Email Notifications**: A robust notifications service uses Gmail OAuth2 to send transactional emails for events like order confirmation.
+
+👉 **Dedicated Image Upload Service**: Isolates file handling logic into its own service for managing product image uploads with validation.
+
+👉 **Containerized Environment**: Fully containerized with Docker, ensuring consistent and reproducible setups across development and production.
+
+## 💻 Technologies Used
+
+- NestJS
+- GraphQL w/ Apollo Federation
+- TypeScript
+- PostgreSQL w/ Prisma
+- Redis
+- Docker
+- JWT (JSON Web Tokens)
+- PayMaya API
+- Nodemailer with Gmail OAuth2
+- Pino (for logging)
+
+<!-- - [![Next.js][Next.js]][Next-url]
+- [![React.js][React.js]][React-url]
+- [![TypeScript][TypeScript]][TypeScript-url]
+- [![TailwindCSS][TailwindCSS]][TailwindCSS-url]
+- [![MongoDB][MongoDB]][MongoDB-url]
+- [![Zod][Zod]][Zod-url]
+
+[Next.js]: https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white
+[Next-url]: https://nextjs.org/
+[React.js]: https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
+[React-url]: https://react.dev/
+[TypeScript]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
+[TypeScript-url]: https://www.typescriptlang.org/
+[TailwindCSS]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
+[TailwindCSS-url]: https://tailwindcss.com/
+[MongoDB]: https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white
+[MongoDB-url]: https://www.mongodb.com/
+[Zod]: https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white
+[Zod-url]: https://zod.dev/ -->
+
+## 🛠️ Setup Project
+
+To get this project up and running in your development environment, follow these step-by-step instructions.
+
+### 🍴 Prerequisites
+
+We need to install or make sure that these tools are pre-installed on your machine:
+
+- [Node.js](https://nodejs.org/en)
+- [pnpm](https://pnpm.io/)
+- [Git](https://git-scm.com/downloads)
+- [Docker](https://www.docker.com/)
+
+### 🚀 Install Project
+
+1. Clone the Repository
 
 ```bash
-$ pnpm install
+git clone https://github.com/janrizmlibres/mercado-ecommerce.git
 ```
 
-## Compile and run the project
+2. Navigate to the project directory and install all dependencies using pnpm
 
 ```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+cd mercado-ecommerce
+pnpm install
 ```
 
-## Run tests
+3. Set up the environment variables. Each service in the `/apps` directory requires its own `.env` file. You can create these by copying the provided `.env.example` files (if available) and filling in the required credentials for databases, APIs, etc.
+
+<!-- ```bash
+AUTH_SECRET="YOUR_AUTH_SECRET" # Added by `npx auth`. Read more: https://cli.authjs.dev
+AUTH_GITHUB_ID="YOUR_AUTH_GITHUB_ID"
+AUTH_GITHUB_SECRET="YOUR_AUTH_GITHUB_SECRET"
+AUTH_GOOGLE_ID="YOUR_AUTH_GOOGLE_ID"
+AUTH_GOOGLE_SECRET="YOUR_AUTH_GOOGLE_SECRET"
+MONGODB_URI="YOUR_MONGODB_URI"
+GOOGLE_GENERATIVE_AI_API_KEY="YOUR_GOOGLE_GENERATIVE_AI_API_KEY"
+``` -->
+
+4. Run the development server
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+docker-compose up
 ```
 
-## Deployment
+## 🤝 Contributing and Support
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### ⚒️ How to Contribute
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Want to contribute? Great!
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+To fix a bug or enhance an existing module, follow these steps:
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+- Fork the repo
+- Create a new branch (`git checkout -b improve-feature`)
+- Make the appropriate changes in the files
+- Add changes to reflect the changes made
+- Commit your changes (`git commit -am 'Improve feature'`)
+- Push to the branch (`git push origin improve-feature`)
+- Create a Pull Request
 
-## Resources
+### 📩 Bug Report
 
-Check out a few resources that may come in handy when working with NestJS:
+If you find a bug, kindly open an issue [here](https://github.com/janrizmlibres/mercado-ecommerce/issues/new) by including a description of your problem and the expected result.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 📞 Contact Me
 
-## Support
+[![Static Badge](https://img.shields.io/badge/LinkedIn-janrizlibres-blue?style=flat&logo=linkedin&logoColor=%23b0c0c0&labelColor=%23363D44)
+](https://www.linkedin.com/in/janrizlibres/)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📋 License
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+[MIT](https://choosealicense.com/licenses/mit/)
+Released 2025 by Janriz Libres @janrizmlibres
