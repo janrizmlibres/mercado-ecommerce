@@ -1,11 +1,10 @@
-import { CACHE_INSTANCE, UserDto } from '@app/common';
+import { CACHE_INSTANCE, OrderVariantDto, UserDto } from '@app/common';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { Cacheable } from 'cacheable';
 import { UpdateCartItemDto } from './dto/update-cart.dto';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { CartModel } from './models/cart.model';
 import { randomUUID } from 'crypto';
-import { CartVariantDto } from './dto/cart-variant.dto';
 
 @Injectable()
 export class CartService {
@@ -35,7 +34,7 @@ export class CartService {
     return cart;
   }
 
-  private variantsEqual(arr1: CartVariantDto[], arr2: CartVariantDto[]) {
+  private variantsEqual(arr1: OrderVariantDto[], arr2: OrderVariantDto[]) {
     const map1 = new Map(arr1.map(({ name, value }) => [name, value]));
     const map2 = new Map(arr2.map(({ name, value }) => [name, value]));
 

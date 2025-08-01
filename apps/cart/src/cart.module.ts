@@ -1,11 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CartService } from './cart.service';
-import {
-  CACHE_INSTANCE,
-  ConfigModule,
-  LoggerModule,
-  ORDERS_SERVICE,
-} from '@app/common';
+import { CACHE_INSTANCE, ConfigModule, LoggerModule } from '@app/common';
 import { CartResolver } from './cart.resolver';
 import { ConfigService } from '@nestjs/config';
 import { createKeyv } from '@keyv/redis';
@@ -16,7 +11,6 @@ import {
   ApolloFederationDriver,
   ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -36,19 +30,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         ORDERS_PORT: Joi.number().required(),
       }),
     ),
-    ClientsModule.registerAsync([
-      {
-        name: ORDERS_SERVICE,
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.TCP,
-          options: {
-            host: configService.getOrThrow('ORDERS_HOST'),
-            port: configService.getOrThrow('ORDERS_PORT'),
-          },
-        }),
-        inject: [ConfigService],
-      },
-    ]),
   ],
   providers: [
     CartService,
