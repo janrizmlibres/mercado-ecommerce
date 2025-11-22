@@ -8,7 +8,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { Category } from '.prisma/client';
+import { Category } from '../generated/client';
 import { VariantDto } from './variant.dto';
 import { Type } from 'class-transformer';
 

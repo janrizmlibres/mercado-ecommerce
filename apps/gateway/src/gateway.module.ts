@@ -17,6 +17,7 @@ import { authContext } from './auth.context';
           context: authContext,
           graphiql: true,
           playground: false,
+          introspection: true,
         },
         gateway: {
           supergraphSdl: new IntrospectAndCompose({

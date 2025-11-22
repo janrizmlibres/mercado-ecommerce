@@ -3,11 +3,24 @@ import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import { PrismaService } from './prisma.service';
 import { UsersResolver } from './users.resolver';
-import { CACHE_INSTANCE } from '@app/common';
+import { CACHE_INSTANCE, CART_SERVICE } from '@app/common';
 import { ConfigService } from '@nestjs/config';
 import { createKeyv, Cacheable } from 'cacheable';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
+  imports: [
+    ClientsModule.register([
+      {
+        name: CART_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host: '0.0.0.0',
+          port: 3020,
+        },
+      },
+    ]),
+  ],
   controllers: [UsersController],
   providers: [
     UsersService,

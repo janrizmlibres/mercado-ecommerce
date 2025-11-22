@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { CartService } from './cart.service';
 import { CACHE_INSTANCE, ConfigModule, LoggerModule } from '@app/common';
 import { CartResolver } from './cart.resolver';
+import { CartController } from './cart.controller';
 import { ConfigService } from '@nestjs/config';
 import { createKeyv } from '@keyv/redis';
 import { Cacheable } from 'cacheable';
@@ -29,6 +30,7 @@ import {
       }),
     ),
   ],
+  controllers: [CartController],
   providers: [
     CartService,
     CartResolver,

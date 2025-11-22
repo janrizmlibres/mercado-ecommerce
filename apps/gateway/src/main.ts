@@ -6,6 +6,10 @@ import { setApp } from './app';
 
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
+  app.enableCors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  });
   app.useLogger(app.get(Logger));
   const configService = app.get(ConfigService);
   await app.listen(configService.getOrThrow('PORT'));

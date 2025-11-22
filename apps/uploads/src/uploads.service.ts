@@ -12,7 +12,7 @@ export class UploadsService {
       originalName: file.originalname,
       mimetype: file.mimetype,
       size: file.size,
-      url: `/images/${file.filename}`,
+      url: `http://localhost:3006/images/${file.filename}`,
     };
   }
 }

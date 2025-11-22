@@ -1,7 +1,7 @@
 import { IsArray, IsEnum, IsNumber, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { OrderItemDto } from '@app/common';
-import { Status } from '.prisma/client';
+import { Status } from '../generated/client';
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()

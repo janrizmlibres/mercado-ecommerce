@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotificationsController } from './notifications.controller';
 import { NotificationsService } from './notifications.service';
@@ -11,7 +12,9 @@ describe('NotificationsController', () => {
       providers: [NotificationsService],
     }).compile();
 
-    notificationsController = app.get<NotificationsController>(NotificationsController);
+    notificationsController = app.get<NotificationsController>(
+      NotificationsController,
+    );
   });
 
   describe('root', () => {

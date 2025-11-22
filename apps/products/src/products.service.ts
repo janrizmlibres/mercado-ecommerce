@@ -2,14 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { CACHE_INSTANCE } from '@app/common';
+import { CACHE_INSTANCE, CART_SERVICE } from '@app/common';
 import { Cacheable } from 'cacheable';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly prismaService: PrismaService,
     @Inject(CACHE_INSTANCE) private readonly redisCache: Cacheable,
+    @Inject(CART_SERVICE) private readonly cartService: ClientProxy,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -91,6 +93,8 @@ export class ProductsService {
 
     const cacheKey = `product:${id}`;
     await this.redisCache.delete(cacheKey);
+
+    this.cartService.emit('product_deleted', { id });
 
     return deletedProduct;
   }

@@ -1,4 +1,4 @@
-import { Status } from '.prisma/client';
+import { Status } from '../generated/client';
 import { Field, ObjectType, registerEnumType } from '@nestjs/graphql';
 import { OrderItemModel } from './order-item.model';
 

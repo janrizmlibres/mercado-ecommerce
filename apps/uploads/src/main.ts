@@ -6,6 +6,10 @@ import { UploadsModule } from './uploads.module';
 async function bootstrap() {
   const app = await NestFactory.create(UploadsModule);
   app.useLogger(app.get(Logger));
+  app.enableCors({
+    origin: '*', // ! In production, restrict this
+    credentials: true,
+  });
   const configService = app.get(ConfigService);
   await app.listen(configService.get('PORT')!);
 }

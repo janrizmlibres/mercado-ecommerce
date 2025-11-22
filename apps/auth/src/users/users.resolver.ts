@@ -19,4 +19,9 @@ export class UsersResolver {
   findAll() {
     return this.usersService.findAll();
   }
+
+  @Mutation(() => UserModel)
+  removeUser(@Args('id', { type: () => String }) id: string) {
+    return this.usersService.remove(id);
+  }
 }

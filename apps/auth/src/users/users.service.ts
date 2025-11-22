@@ -10,13 +10,15 @@ import { PrismaService } from './prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { GetUserDto } from './dto/get-user.dto';
 import { Cacheable } from 'cacheable';
-import { CACHE_INSTANCE } from '@app/common';
+import { CACHE_INSTANCE, CART_SERVICE } from '@app/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prismaService: PrismaService,
     @Inject(CACHE_INSTANCE) private readonly cache: Cacheable,
+    @Inject(CART_SERVICE) private readonly cartService: ClientProxy,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -76,5 +78,17 @@ export class UsersService {
 
   findAll() {
     return this.prismaService.user.findMany();
+  }
+
+  async remove(id: string) {
+    const deletedUser = await this.prismaService.user.delete({
+      where: { id },
+    });
+    const cacheKey = `user:${id}`;
+    await this.cache.delete(cacheKey);
+
+    this.cartService.emit('user_deleted', { id });
+
+    return deletedUser;
   }
 }

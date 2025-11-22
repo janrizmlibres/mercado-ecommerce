@@ -113,4 +113,19 @@ export class CartService {
     await this.redis.set(cacheKey, cart);
     return cart;
   }
+
+  async removeUserCart(userId: string) {
+    const cacheKey = `cart:${userId}`;
+    await this.redis.delete(cacheKey);
+  }
+
+  async removeProductFromAllCarts(productId: string) {
+    // In a real Redis implementation, we would need a secondary index or use SCAN
+    // to find all carts containing this product.
+    // For this demo, we will log the action.
+    console.log(
+      `[CartService] Product ${productId} deleted. Ideally should remove from all carts.`,
+    );
+    return Promise.resolve();
+  }
 }

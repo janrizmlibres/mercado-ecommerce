@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User as UserModel } from '.prisma/client';
+import { User as UserModel } from './generated/client';
 import { Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -26,5 +26,7 @@ export class AuthService {
       httpOnly: true,
       expires,
     });
+
+    return token;
   }
 }

@@ -5,6 +5,7 @@ import { UpdateCartItemDto } from './dto/update-cart.dto';
 import { CartItemModel } from './models/cart-item.model';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { CurrentUser, UserDto } from '@app/common';
+import { UnauthorizedException } from '@nestjs/common';
 
 @Resolver(() => CartModel)
 export class CartResolver {
@@ -15,11 +16,17 @@ export class CartResolver {
     @Args('createCartItemInput') createCartItemInput: CreateCartItemDto,
     @CurrentUser() user: UserDto,
   ) {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     return this.cartService.createItem(user, createCartItemInput);
   }
 
   @Query(() => CartModel, { name: 'cart' })
   find(@CurrentUser() user: UserDto) {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     return this.cartService.find(user);
   }
 
@@ -29,6 +36,9 @@ export class CartResolver {
     @Args('updateCartItemInput') updateProductInput: UpdateCartItemDto,
     @CurrentUser() user: UserDto,
   ) {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     return this.cartService.updateItem(id, user, updateProductInput);
   }
 
@@ -37,6 +47,9 @@ export class CartResolver {
     @Args('id', { type: () => String }) id: string,
     @CurrentUser() user: UserDto,
   ) {
+    if (!user) {
+      throw new UnauthorizedException('User not authenticated');
+    }
     return this.cartService.removeItem(id, user);
   }
 }

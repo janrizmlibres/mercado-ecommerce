@@ -1,7 +1,12 @@
 import { Module } from '@nestjs/common';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
-import { CACHE_INSTANCE, ConfigModule, LoggerModule } from '@app/common';
+import {
+  CACHE_INSTANCE,
+  CART_SERVICE,
+  ConfigModule,
+  LoggerModule,
+} from '@app/common';
 import * as Joi from 'joi';
 import { PrismaService } from './prisma.service';
 import { ProductsResolver } from './products.resolver';
@@ -13,6 +18,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ConfigService } from '@nestjs/config';
 import { Cacheable } from 'cacheable';
 import { createKeyv } from '@keyv/redis';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -30,6 +36,16 @@ import { createKeyv } from '@keyv/redis';
         PORT: Joi.number().required(),
       }),
     ),
+    ClientsModule.register([
+      {
+        name: CART_SERVICE,
+        transport: Transport.TCP,
+        options: {
+          host: '0.0.0.0',
+          port: 3020,
+        },
+      },
+    ]),
   ],
   controllers: [ProductsController],
   providers: [
