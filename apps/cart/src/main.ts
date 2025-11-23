@@ -12,7 +12,7 @@ async function bootstrap() {
     transport: Transport.TCP,
     options: {
       host: '0.0.0.0',
-      port: 3020,
+      port: configService.get<number>('TCP_PORT') ?? 3020,
     },
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

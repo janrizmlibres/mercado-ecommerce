@@ -34,16 +34,21 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
       Joi.object({
         DATABASE_URL: Joi.string().required(),
         PORT: Joi.number().required(),
+        CART_HOST: Joi.string().optional(),
+        CART_PORT: Joi.number().optional(),
       }),
     ),
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: CART_SERVICE,
-        transport: Transport.TCP,
-        options: {
-          host: '0.0.0.0',
-          port: 3020,
-        },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.TCP,
+          options: {
+            host: configService.get('CART_HOST') || '0.0.0.0',
+            port: configService.get('CART_PORT') || 3020,
+          },
+        }),
+        inject: [ConfigService],
       },
     ]),
   ],

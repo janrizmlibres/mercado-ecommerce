@@ -27,6 +27,7 @@ import {
       Joi.object({
         REDIS_URL: Joi.string().required(),
         PORT: Joi.number().required(),
+        TCP_PORT: Joi.number().optional(),
       }),
     ),
   ],

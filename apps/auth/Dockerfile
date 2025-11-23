@@ -20,13 +20,12 @@ USER app
 # Install dependencies as app user
 RUN pnpm install
 
-# Copy Prisma schema and generate client
-COPY --chown=app:app apps/auth/prisma ./prisma
-RUN pnpm prisma generate
-
-# Copy source code (will be overridden by watch sync)
+# Copy service source code and shared libs
 COPY --chown=app:app apps/auth apps/auth
 COPY --chown=app:app libs libs
+
+# Generate Prisma client for this service (uses apps/auth/prisma/schema.prisma)
+RUN pnpm prisma generate --schema apps/auth/prisma/schema.prisma
 
 # Build the application
 RUN pnpm run build auth
@@ -40,10 +39,12 @@ WORKDIR /usr/src/app
 
 RUN npm install -g pnpm
 
+# Reuse built node_modules (including Prisma engines and generated client) from development stage
+COPY --from=development /usr/src/app/node_modules ./node_modules
+# Keep package metadata for tooling
 COPY package.json pnpm-lock.yaml ./
 
-RUN pnpm install --prod
-
 COPY --from=development /usr/src/app/dist ./dist
+COPY --from=development /usr/src/app/apps/auth/src/generated ./apps/auth/src/generated
 
 CMD ["pnpm", "run", "start:prod", "dist/apps/auth/main"]

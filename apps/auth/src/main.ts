@@ -6,6 +6,11 @@ import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
 import { Transport } from '@nestjs/microservices';
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://mercado-front-production.up.railway.app',
+];
+
 async function bootstrap() {
   const app = await NestFactory.create(AuthModule);
   const configService = app.get(ConfigService);
@@ -18,7 +23,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

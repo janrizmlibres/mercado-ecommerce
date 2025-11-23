@@ -4,10 +4,15 @@ import { ConfigService } from '@nestjs/config';
 import { Logger } from 'nestjs-pino';
 import { setApp } from './app';
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://mercado-front-production.up.railway.app',
+];
+
 async function bootstrap() {
   const app = await NestFactory.create(GatewayModule);
   app.enableCors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   });
   app.useLogger(app.get(Logger));
