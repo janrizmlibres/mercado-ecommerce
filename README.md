@@ -49,4 +49,4 @@ A learning project, deployed once on Railway. Payments run against the Maya sand
 
 ## License
 
-MIT. Released 2025 by Janriz Libres.
+MIT. Released 2025 by Janriz Libres. See [LICENSE](LICENSE).

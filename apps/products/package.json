@@ -12,7 +12,7 @@
     "reset": "dotenv -e .env.local -- pnpm prisma migrate reset"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@mercado/products": "link:",
     "@prisma/client": "^6.12.0",
