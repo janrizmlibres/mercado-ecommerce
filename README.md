@@ -1,152 +1,52 @@
 # Mercado
 
-![GitHub Release](https://img.shields.io/github/v/release/janrizmlibres/mercado-ecommerce?color=orange)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+The backend of an e-commerce store, split into eight NestJS services behind one GraphQL gateway. I built it to learn how a microservices system fits together in practice. Services own their own data, talk to each other over TCP, and show up to the client as a single federated graph. The frontend that uses it is [mercado-front](https://github.com/janrizmlibres/mercado-front).
 
-![Screenshot](architecture-diagram.png)
+![Architecture diagram](architecture-diagram.png)
 
-## 📝 Description
+## Services
 
-Mercado is a comprehensive, production-ready e-commerce backend built on a scalable microservices architecture using NestJS. This project simulates a real-world, distributed system by implementing 8 distinct services—including authentication, payments, and notifications—all unified behind a GraphQL Federation gateway. It demonstrates best practices in domain-driven design, hybrid data persistence, and resilient, containerized deployments.
+| Service | Port | What it does |
+|---|---|---|
+| `gateway` | 3003 | Apollo Gateway. Composes the subgraphs into one schema and checks the `Authentication` header with `auth` before forwarding the user to each subgraph. |
+| `auth` | 3001 | Users, registration and login. `POST /auth/login` returns a JWT. Answers `authenticate` over TCP for the other services. PostgreSQL through Prisma, with users cached in Redis. |
+| `products` | 3002 | Products and their variants. PostgreSQL through Prisma. |
+| `cart` | 3005 | Carts, stored in Redis. Clears items when a user or product is deleted. |
+| `orders` | 3000 | Orders and order items. PostgreSQL through Prisma, cached in Redis. Asks `payments` for a checkout when an order is placed. |
+| `payments` | 3004 | Creates a checkout in the PayMaya (Maya) sandbox and returns its redirect URL. Tells `notifications` to email the buyer. |
+| `notifications` | TCP only | Sends email with Nodemailer through Gmail OAuth2. |
+| `uploads` | 3006 | `POST /uploads/image` takes one image up to 5 MB and serves it back from `/images`. Plain REST, not part of the graph. |
 
-## 📖 Table of Contents
+`gateway` federates every service except `notifications` and `uploads`. Code the services share, such as the JWT guard and the DTOs, lives in `libs/common`.
 
-- [📝 Description](#-description)
-- [✨ Features](#-features)
-- [💻 Technologies Used](#️-technologies-used)
-- [🛠️ Setup Project](#-setup-project)
-  - [🍴 Prerequisites](#-prerequisites)
-  - [🚀 Install Project](#-install-project)
-- [🤝 Contributing and Support](#-contributing-and-support)
-  - [⚒️ How to Contribute](#️-how-to-contribute)
-  - [📩 Bug Report](#-bug-report)
-- [📜 Credits](#-credits)
-- [📞 Contact Me](#-contact-me)
-- [📋 License](#-license)
+## Running it
 
-## ✨ Features
-
-👉 **True Microservices Architecture**: Features 8 distinct services (Auth, Products, Cart, Orders, Payments, Notifications, Uploads, Gateway) with clean domain boundaries.
-
-👉 **GraphQL Federation**: Utilizes Apollo Gateway to create a seamless, unified data graph from multiple underlying GraphQL services.
-
-👉 **Secure JWT Authentication**: A dedicated auth service handles user registration and login, securing the system with JSON Web Tokens.
-
-👉 **Hybrid Data Persistence**: Employs PostgreSQL with Prisma for critical, structured data (Users, Products, Orders) and Redis for high-speed, ephemeral data like shopping carts.
-
-👉 **Real-World Payment Processing**: Integrates with the PayMaya API to handle actual test transactions, not just mock data.
-
-👉 **Reliable Email Notifications**: A robust notifications service uses Gmail OAuth2 to send transactional emails for events like order confirmation.
-
-👉 **Dedicated Image Upload Service**: Isolates file handling logic into its own service for managing product image uploads with validation.
-
-👉 **Containerized Environment**: Fully containerized with Docker, ensuring consistent and reproducible setups across development and production.
-
-## 💻 Technologies Used
-
-- NestJS
-- GraphQL w/ Apollo Federation
-- TypeScript
-- PostgreSQL w/ Prisma
-- Redis
-- Docker
-- JWT (JSON Web Tokens)
-- PayMaya API
-- Nodemailer with Gmail OAuth2
-- Pino (for logging)
-
-<!-- - [![Next.js][Next.js]][Next-url]
-- [![React.js][React.js]][React-url]
-- [![TypeScript][TypeScript]][TypeScript-url]
-- [![TailwindCSS][TailwindCSS]][TailwindCSS-url]
-- [![MongoDB][MongoDB]][MongoDB-url]
-- [![Zod][Zod]][Zod-url]
-
-[Next.js]: https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB
-[React-url]: https://react.dev/
-[TypeScript]: https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white
-[TypeScript-url]: https://www.typescriptlang.org/
-[TailwindCSS]: https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white
-[TailwindCSS-url]: https://tailwindcss.com/
-[MongoDB]: https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white
-[MongoDB-url]: https://www.mongodb.com/
-[Zod]: https://img.shields.io/badge/zod-%233068b7.svg?style=for-the-badge&logo=zod&logoColor=white
-[Zod-url]: https://zod.dev/ -->
-
-## 🛠️ Setup Project
-
-To get this project up and running in your development environment, follow these step-by-step instructions.
-
-### 🍴 Prerequisites
-
-We need to install or make sure that these tools are pre-installed on your machine:
-
-- [Node.js](https://nodejs.org/en)
-- [pnpm](https://pnpm.io/)
-- [Git](https://git-scm.com/downloads)
-- [Docker](https://www.docker.com/)
-
-### 🚀 Install Project
-
-1. Clone the Repository
+You need Node.js, pnpm and Docker.
 
 ```bash
 git clone https://github.com/janrizmlibres/mercado-ecommerce.git
-```
-
-2. Navigate to the project directory and install all dependencies using pnpm
-
-```bash
 cd mercado-ecommerce
 pnpm install
+docker compose up
 ```
 
-3. Set up the environment variables. Each service in the `/apps` directory requires its own `.env` file. You can create these by copying the provided `.env.example` files (if available) and filling in the required credentials for databases, APIs, etc.
+Compose starts every service plus PostgreSQL 17 and Redis. The services with a database run their Prisma migrations on start. `docker compose watch` syncs source changes into the containers.
 
-<!-- ```bash
-AUTH_SECRET="YOUR_AUTH_SECRET" # Added by `npx auth`. Read more: https://cli.authjs.dev
-AUTH_GITHUB_ID="YOUR_AUTH_GITHUB_ID"
-AUTH_GITHUB_SECRET="YOUR_AUTH_GITHUB_SECRET"
-AUTH_GOOGLE_ID="YOUR_AUTH_GOOGLE_ID"
-AUTH_GOOGLE_SECRET="YOUR_AUTH_GOOGLE_SECRET"
-MONGODB_URI="YOUR_MONGODB_URI"
-GOOGLE_GENERATIVE_AI_API_KEY="YOUR_GOOGLE_GENERATIVE_AI_API_KEY"
-``` -->
+Each service reads its own `apps/<service>/.env`, and there are no example files yet. Every service validates its variables on start and names any that are missing. The main ones are below.
 
-4. Run the development server
+| Service | Variables |
+|---|---|
+| `auth` | `DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `JWT_EXPIRATION`, `HTTP_PORT`, `TCP_PORT` |
+| `orders` | `DATABASE_URL`, `REDIS_URL`, `PORT`, `AUTH_HOST`, `AUTH_PORT`, `PAYMENTS_HOST`, `PAYMENTS_PORT` |
+| `gateway` | `PORT`, `AUTH_HOST`, `AUTH_PORT`, and a `*_GRAPHQL_URL` per subgraph |
+| `notifications` | `PORT`, `SMTP_USER`, `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `GOOGLE_OAUTH_REFRESH_TOKEN` |
 
-```bash
-docker-compose up
-```
+To push images to Docker Hub, set `DOCKER_USER` and run `scripts/build-and-push-all.sh`.
 
-## 🤝 Contributing and Support
+## Status
 
-### ⚒️ How to Contribute
+A learning project, deployed once on Railway. Payments run against the Maya sandbox only, and the buyer's email goes out when the checkout is created, not after it is paid.
 
-Want to contribute? Great!
+## License
 
-To fix a bug or enhance an existing module, follow these steps:
-
-- Fork the repo
-- Create a new branch (`git checkout -b improve-feature`)
-- Make the appropriate changes in the files
-- Add changes to reflect the changes made
-- Commit your changes (`git commit -am 'Improve feature'`)
-- Push to the branch (`git push origin improve-feature`)
-- Create a Pull Request
-
-### 📩 Bug Report
-
-If you find a bug, kindly open an issue [here](https://github.com/janrizmlibres/mercado-ecommerce/issues/new) by including a description of your problem and the expected result.
-
-## 📞 Contact Me
-
-[![Static Badge](https://img.shields.io/badge/LinkedIn-janrizlibres-blue?style=flat&logo=linkedin&logoColor=%23b0c0c0&labelColor=%23363D44)
-](https://www.linkedin.com/in/janrizlibres/)
-
-## 📋 License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-Released 2025 by Janriz Libres @janrizmlibres
+MIT. Released 2025 by Janriz Libres.
